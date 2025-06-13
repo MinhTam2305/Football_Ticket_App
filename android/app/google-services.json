@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "240261600858",
+    "project_id": "football-ticket-7dd30",
+    "storage_bucket": "football-ticket-7dd30.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240261600858:android:42c1b433c0146eec296a63",
+        "android_client_info": {
+          "package_name": "com.example.football_ticket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "240261600858-m1estm8gbu6jf6no84arsdnm8f58cqcf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_5KHJNQQvQ0DO9X159rda3T0TGX-k4Lo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "240261600858-m1estm8gbu6jf6no84arsdnm8f58cqcf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
