@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/colors.dart';
+import '../core/constants/colors.dart';
 
 class ButtonCustom extends StatelessWidget {
   final void Function()? opTap;

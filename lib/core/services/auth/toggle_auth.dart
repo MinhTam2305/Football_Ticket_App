@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:football_ticket/screens/login.dart';
-import 'package:football_ticket/screens/signup.dart';
+import 'package:football_ticket/screens/auth/login.dart';
+import 'package:football_ticket/screens/auth/signup.dart';
 
 class ToggleAuth extends StatefulWidget {
   const ToggleAuth({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_ticket/utils/colors.dart';
+import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/widgets/button_custom.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
 

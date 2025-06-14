@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:football_ticket/services/auth/toggle_auth.dart';
+import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'firebase_options.dart';
 
 void main() async {

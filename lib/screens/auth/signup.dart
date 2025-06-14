@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../utils/colors.dart';
-import '../widgets/button_custom.dart';
-import '../widgets/text_field_custom.dart';
+import '../../core/constants/colors.dart';
+import '../../widgets/button_custom.dart';
+import '../../widgets/text_field_custom.dart';
 
 class Signup extends StatefulWidget {
   void Function()? onTap;

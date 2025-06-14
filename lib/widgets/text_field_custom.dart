@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/colors.dart';
+import '../core/constants/colors.dart';
 
 Widget textFieldCustom(String label, IconData icon,TextEditingController controller, bool obscureText) {
   return TextField(
