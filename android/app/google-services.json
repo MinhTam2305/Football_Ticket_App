@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "240261600858-3g8c09187bhkbk3m8oeol4un1sva153v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.football_ticket",
+            "certificate_hash": "42a8800c8fdd71b46caf9f0532a4455e12e2c1cd"
+          }
+        },
+        {
           "client_id": "240261600858-m1estm8gbu6jf6no84arsdnm8f58cqcf.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "240261600858-m1estm8gbu6jf6no84arsdnm8f58cqcf.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "240261600858-9qfrafi7l72lmom4p1kjtfn7n342btj0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.footballTicket"
+              }
             }
           ]
         }

@@ -6,7 +6,7 @@ import 'package:football_ticket/widgets/text_field_custom.dart';
 class Login extends StatefulWidget {
   void Function()? onTap;
 
-  Login({super.key, required this.onTap});
+  Login({super.key, this.onTap});
 
   @override
   State<Login> createState() => _LoginState();
