@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/screens/auth/login.dart';
+import 'package:football_ticket/screens/home_page.dart';
 import '../../../blocs/auth/auth_bloc.dart';
 import '../../../blocs/auth/auth_event.dart';
 import '../../../blocs/auth/auth_state.dart';
@@ -33,14 +35,28 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                final code = codeController.text.trim();
-                context.read<AuthBloc>().add(
-                  VerifyOtpRequested(code, widget.verificationId),
-                );
-              },
-              child: Text("Xác nhận"),
+            Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    final code = codeController.text.trim();
+                    context.read<AuthBloc>().add(
+                      VerifyOtpRequested(code, widget.verificationId),
+                    );
+                  },
+                  child: Text("Xác nhận"),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(builder: (context) => ToggleAuth()),
+                    );
+                  },
+                  child: Text("Hủy"),
+                ),
+              ],
             ),
             BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
@@ -51,7 +67,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (context) => Login()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 } else if (state is AuthFailure) {
                   // ScaffoldMessenger.of(context).showSnackBar(

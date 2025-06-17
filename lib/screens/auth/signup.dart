@@ -74,7 +74,7 @@ class _SignupState extends State<Signup> {
           setState(() {
             isLoading = false;
           });
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => OtpScreen(verificationId: state.verificationId),

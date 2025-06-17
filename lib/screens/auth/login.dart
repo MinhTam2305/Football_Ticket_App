@@ -26,8 +26,16 @@ class _LoginState extends State<Login> {
 
   void login() {
     setState(() {
-      isLoading=true;
+      isLoading = true;
     });
+  }
+
+  void forgetPassword(String phone) {
+    if (phone.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Enter your munber phone")));
+    }
   }
 
   @override
@@ -61,9 +69,31 @@ class _LoginState extends State<Login> {
                 _passwordController,
                 true,
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 5),
 
               //change to sign up
+              GestureDetector(
+                onTap: () => forgetPassword(_phoneController.text),
+
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Forget password?",
+                      style: AppTextStyles.body1.copyWith(
+                        color: const Color.fromARGB(255, 241, 56, 56),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 55),
+
+              //btn Login
+              ButtonCustom(text: "Login", opTap: login, isLoading: isLoading),
+              SizedBox(height: 28),
+
               GestureDetector(
                 onTap: widget.onTap,
                 child: Row(
@@ -81,10 +111,6 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-              SizedBox(height: 55),
-
-              //btn Login
-              ButtonCustom(text: "Login", opTap: login, isLoading: isLoading),
             ],
           ),
         ),
