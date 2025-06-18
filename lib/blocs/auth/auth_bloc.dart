@@ -10,6 +10,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepo) : super(AuthInitial()) {
     on<SendOtpRequetsed>(_sendOpt);
     on<VerifyOtpRequested>(_verifyOpt);
+    on<VerifyForgetPasswordOtpRequested>(_verifyForgetPasswordOtp);
     on<OtpSentEvent>((event, emit) => emit(OtpSent(event.verificationId)));
     on<GetCurrentUserRequested>(_getUser);
   }
@@ -40,6 +41,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       emit(AuthSuccess(user));
+    } catch (e) {
+      emit(AuthFailure("Verify Fail"));
+    }
+  }
+
+  Future<void> _verifyForgetPasswordOtp(
+    VerifyForgetPasswordOtpRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    try {
+      final user = await _authRepo.verifyOtp(
+        verificationId: event.verificationId,
+        smsCode: event.otp,
+      );
+
+      emit(VerifySuccess(user));
     } catch (e) {
       emit(AuthFailure("Verify Fail"));
     }

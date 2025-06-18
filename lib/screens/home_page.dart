@@ -1,12 +1,17 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/blocs/auth/auth_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_event.dart';
 import 'package:football_ticket/blocs/auth/auth_state.dart';
+import 'package:football_ticket/components/home/card_highlight.dart';
+import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/changpassword_page.dart';
+import 'package:football_ticket/screens/details_match.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +20,14 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+List<String> list = <String>[
+  'V-League 2024',
+  'V-League 2025',
+  'V-League 2026',
+  'V-League 2027',
+];
+List<String> team = <String>['VietNam', 'Malaysia', 'Campuchia', 'China'];
+
 class _HomePageState extends State<HomePage> {
   UserModel userTest = UserModel(
     uid: "123456",
@@ -22,6 +35,9 @@ class _HomePageState extends State<HomePage> {
     phoneNumber: "0399302970",
     role: "user",
   );
+
+  String dropdownValue = list.first;
+  String dropdownTeamValue = team.first;
 
   // @override
   // void initState() {
@@ -57,11 +73,19 @@ class _HomePageState extends State<HomePage> {
             children: [
               Text("Hi ${userTest.name!}", style: AppTextStyles.title2),
               GestureDetector(
-                
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ChangpasswordPage()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangpasswordPage(),
+                    ),
+                  );
                 },
-                child: Icon(FontAwesomeIcons.cartShopping, color: AppColors.grey,))
+                child: Icon(
+                  FontAwesomeIcons.cartShopping,
+                  color: AppColors.grey,
+                ),
+              ),
             ],
           ),
         ),
@@ -72,79 +96,84 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 20),
+            Text(
+              "Highlight Match",
+              style: AppTextStyles.title2.copyWith(color: AppColors.textMain),
+            ),
+            SizedBox(height: 15),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  CardHighlight(),
+                  SizedBox(width: 10),
+                  CardHighlight(),
+                  SizedBox(width: 10),
+                  CardHighlight(),
+                  SizedBox(width: 10),
+                  CardHighlight(),
+                  SizedBox(width: 10),
+                  CardHighlight(),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 25),
             Text(
               "Maches",
               style: AppTextStyles.title1.copyWith(color: AppColors.primary),
             ),
-            SizedBox(height: 25),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 150,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary, width: 2),
-              ),
-              child: Column(
-                children: [
-                  SizedBox(height: 5),
-                  Text(
-                    "V-lEAGUE 2025",
-                    style: AppTextStyles.body1.copyWith(color: Colors.black,fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Image.asset(
-                            "assets/images/vietnamFlag.jpg",
-                            width: 60,
-                            height: 50,
-                          ),
-                          Text("VietNam", style: AppTextStyles.body1),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Image.asset(
-                            "assets/images/malaysia.png",
-                            width: 60,
-                            height: 50,
-                          ),
-                          Text("Malaysia", style: AppTextStyles.body1),
-                        ],
-                      ),
-                    ],
-                  ),
 
-                  Divider(color: AppColors.secondary),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.timer_sharp, color: AppColors.grey),
-                          SizedBox(width: 5),
-                          Text("15/06 8.00 pm", style: AppTextStyles.body2),
-                        ],
-                      ),
-                      SizedBox(width: 70),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: AppColors.grey,
-                          ),
-                          SizedBox(width: 5),
-                          Text("Go Dau", style: AppTextStyles.body2),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            SizedBox(height: 5),
+            Row(
+              children: [
+                DropdownButton<String>(
+                  value: dropdownValue,
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownValue = value!;
+                    });
+                  },
+                  items:
+                      list.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                ),
+                 SizedBox(width: 25),
+                DropdownButton<String>(
+                  value: dropdownTeamValue,
+                  onChanged: (String? value) {
+                    setState(() {
+                      dropdownTeamValue = value!;
+                    });
+                  },
+                  items:
+                      team.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                ),
+              ],
             ),
+
+            SizedBox(height: 25),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailsMatch()),
+                );
+              },
+              child: CardMatch(),
+            ),
+            SizedBox(height: 25),
+            CardMatch(),
           ],
         ),
       ),

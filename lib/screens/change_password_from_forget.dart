@@ -5,25 +5,23 @@ import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/widgets/button_custom.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
 
-class ChangpasswordPage extends StatelessWidget {
+class ChangePasswordFromForget extends StatelessWidget {
+  UserModel? user;
+  ChangePasswordFromForget({super.key,required this.user});
 
-  ChangpasswordPage({super.key});
-
-  final TextEditingController _oldPassword = TextEditingController();
   final TextEditingController _newPassword = TextEditingController();
   final TextEditingController _confirmPassword = TextEditingController();
   void changePassword(BuildContext context){
-    String oldPassword = _oldPassword.text;
     String newPassword = _newPassword.text;
     String confirmPassword = _confirmPassword.text;
 
 
-    if(oldPassword.isEmpty||newPassword.isEmpty||confirmPassword.isEmpty){
+    if(newPassword.isEmpty||confirmPassword.isEmpty){
        ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Enter require infomation!")),
           );
     }
-    else  if(oldPassword.length<6||newPassword.length<6||confirmPassword.length<6){
+    else  if(newPassword.length<6||confirmPassword.length<6){
        ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Password must be 6 characters!")),
           );
@@ -57,13 +55,7 @@ class ChangpasswordPage extends StatelessWidget {
               _newPassword,
               true,
             ),
-            SizedBox(height: 25),
-            textFieldCustom(
-              "New Password",
-              Icons.password_outlined,
-              _oldPassword,
-              true,
-            ),
+
             SizedBox(height: 25),
             textFieldCustom(
               "Old Password",

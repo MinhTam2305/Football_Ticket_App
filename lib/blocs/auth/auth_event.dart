@@ -23,6 +23,15 @@ class VerifyOtpRequested extends AuthEvent {
   List<Object?> get props => [smsCode, verificationId];
 }
 
+class VerifyForgetPasswordOtpRequested extends AuthEvent {
+  final String otp;
+  final String verificationId;
+  VerifyForgetPasswordOtpRequested( this.otp,  this.verificationId);
+
+   @override
+  List<Object?> get props => [otp, verificationId];
+}
+
 class OtpSentEvent extends AuthEvent {
   final String verificationId;
   OtpSentEvent(this.verificationId);
