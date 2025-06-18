@@ -2,10 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_bloc.dart';
+import 'package:football_ticket/blocs/ticket/ticket_bloc.dart';
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/repositories/auth_repository.dart';
 import 'package:football_ticket/screens/bottom_navigation.dart';
 import 'package:football_ticket/screens/home_page.dart';
+import 'package:football_ticket/screens/ticket/ticket_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -13,7 +15,9 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => AuthBloc(AuthRepository()))],
+      providers: [BlocProvider(create: (_) => AuthBloc(AuthRepository())),
+      BlocProvider(create: (_)=> TicketBloc()),
+      ],
       child: const MyApp(),
     ),
   );

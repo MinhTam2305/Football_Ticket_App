@@ -4,6 +4,7 @@ import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/change_password_from_forget.dart';
 import 'package:football_ticket/screens/home_page.dart';
+import 'package:football_ticket/screens/ticket/ticket_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   const BottomNavigation({super.key});
@@ -16,7 +17,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   int _currentPageIndex = 0;
   static final List<Widget> _widgetOption = <Widget>[
     HomePage(),
-    ChangePasswordFromForget(user: UserModel(uid: "123")),
+    TicketScreen(),
     HomePage(),
   ];
   void _onItemTapped(int index) {
@@ -36,7 +37,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.ticket),
+            icon: Icon(Icons.confirmation_number_outlined),
             label: "Ticket",
           ),
           BottomNavigationBarItem(

@@ -26,11 +26,7 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        centerTitle: true,
-        title: const Text('Ticket'),
-      ),
+      appBar: AppBar(centerTitle: true, title: const Text('Ticket')),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -57,25 +53,6 @@ class _TicketScreenState extends State<TicketScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
-        selectedItemColor: Colors.purple, // hoặc màu bạn muốn
-        unselectedItemColor: Colors.black54,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number_outlined), // đồng bộ với màn detail
-            label: 'Ticket',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Profile',
-          ),
-        ],
-      ),
     );
   }
 
@@ -88,10 +65,7 @@ class _TicketScreenState extends State<TicketScreen> {
         border: Border.all(color: Colors.blue),
       ),
       child: Row(
-        children: [
-          _buildTabButton('Unused', 0),
-          _buildTabButton('Used', 1),
-        ],
+        children: [_buildTabButton('Unused', 0), _buildTabButton('Used', 1)],
       ),
     );
   }
@@ -130,10 +104,11 @@ class _TicketScreenState extends State<TicketScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TicketDetailScreen(
-              matchName: ticket.matchName,
-              qrData: ticket.matchName + ticket.dateTime,
-            ),
+            builder:
+                (context) => TicketDetailScreen(
+                  matchName: ticket.matchName,
+                  qrData: ticket.matchName + ticket.dateTime,
+                ),
           ),
         );
       },
