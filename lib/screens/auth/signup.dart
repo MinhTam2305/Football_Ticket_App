@@ -77,7 +77,7 @@ class _SignupState extends State<Signup> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => OtpScreen(verificationId: state.verificationId),
+              builder: (context) => OtpScreen(verificationId: state.verificationId,isForgetPassword: false, ),
             ),
           );
         }
