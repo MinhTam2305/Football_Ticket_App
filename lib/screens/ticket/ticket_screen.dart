@@ -27,7 +27,11 @@ class _TicketScreenState extends State<TicketScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context); // quay về home
+          },
+        ),
         centerTitle: true,
         title: const Text('Ticket'),
       ),
@@ -45,9 +49,9 @@ class _TicketScreenState extends State<TicketScreen> {
                   // Lọc vé theo tab
                   List<Ticket> filteredTickets = tickets.where((ticket) {
                     if (selectedIndex == 0) {
-                      return !ticket.isUsed; // vé chưa dùng
+                      return !ticket.isUsed; // chưa dùng
                     } else {
-                      return ticket.isUsed;  // vé đã dùng
+                      return ticket.isUsed; // đã dùng
                     }
                   }).toList();
 
@@ -122,7 +126,7 @@ class _TicketScreenState extends State<TicketScreen> {
           MaterialPageRoute(
             builder: (context) => TicketDetailScreen(
               matchName: ticket.matchName,
-              qrData: ticket.matchName + ticket.dateTime,
+              qrData: ticket.ticketCode, // <-- SỬ DỤNG MÃ VÉ LÀM QR
             ),
           ),
         );
@@ -137,7 +141,7 @@ class _TicketScreenState extends State<TicketScreen> {
         child: Row(
           children: [
             QrImageView(
-              data: ticket.matchName + ticket.dateTime,
+              data: ticket.ticketCode, // <-- SỬ DỤNG MÃ VÉ LÀM QR
               version: QrVersions.auto,
               size: 80.0,
             ),
