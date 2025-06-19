@@ -4,6 +4,7 @@ import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/change_password_from_forget.dart';
 import 'package:football_ticket/screens/home_page.dart';
+import 'package:football_ticket/screens/staff/home_staff.dart';
 import 'package:football_ticket/screens/ticket/ticket_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -18,7 +19,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   static final List<Widget> _widgetOption = <Widget>[
     HomePage(),
     TicketScreen(),
-    HomePage(),
+    HomeStaff(),
   ];
   void _onItemTapped(int index) {
     setState(() {
