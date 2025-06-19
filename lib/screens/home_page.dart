@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
@@ -29,6 +30,11 @@ List<String> list = <String>[
 List<String> team = <String>['VietNam', 'Malaysia', 'Campuchia', 'China'];
 
 class _HomePageState extends State<HomePage> {
+  //pageview auto_scroll
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+  Timer? _timer;
+
   UserModel userTest = UserModel(
     uid: "123456",
     name: "Tam",
@@ -39,11 +45,31 @@ class _HomePageState extends State<HomePage> {
   String dropdownValue = list.first;
   String dropdownTeamValue = team.first;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   context.read<AuthBloc>().add(GetCurrentUserRequested());
-  // }
+  @override
+  void initState() {
+    super.initState();
+    // context.read<AuthBloc>().add(GetCurrentUserRequested());
+
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < 4) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+      _pageController.animateToPage(
+        _currentPage,
+        duration: (Duration(milliseconds: 400)),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,91 +116,131 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            Text(
-              "Highlight Match",
-              style: AppTextStyles.title2.copyWith(color: AppColors.textMain),
-            ),
-            SizedBox(height: 15),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+        
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 20),
+              Text(
+                "Highlight Match",
+                style: AppTextStyles.title2.copyWith(color: AppColors.textMain),
+              ),
+              SizedBox(height: 15),
+              SizedBox(
+                height: 215,
+                child: PageView(
+                  controller: _pageController,
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    CardHighlight(),
+                    CardHighlight(),
+                    CardHighlight(),
+                    CardHighlight(),
+                    CardHighlight(),
+                  ],
+                ),
+              ),
+        
+              SizedBox(height: 25),
+              Text(
+                "Maches",
+                style: AppTextStyles.title1.copyWith(color: AppColors.primary),
+              ),
+        
+              SizedBox(height: 5),
+              Row(
                 children: [
-                  CardHighlight(),
-                  SizedBox(width: 10),
-                  CardHighlight(),
-                  SizedBox(width: 10),
-                  CardHighlight(),
-                  SizedBox(width: 10),
-                  CardHighlight(),
-                  SizedBox(width: 10),
-                  CardHighlight(),
+                  Container(
+                    width: 140,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary,
+                      border: Border.all(color: AppColors.primary, width: 2),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Center(
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        style: const TextStyle(
+                          color: AppColors.textMain,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropdownValue = value!;
+                          });
+                        },
+                        elevation: 5,
+                        dropdownColor: AppColors.secondary,
+                        borderRadius: BorderRadius.circular(12),
+                        icon: SizedBox.shrink(),
+                        underline: SizedBox(),
+                        items:
+                            list.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 25),
+                  Container(
+                    width: 140,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.primary, width: 2),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    child: Center(
+                      child: DropdownButton<String>(
+                        value: dropdownTeamValue,
+                        style: const TextStyle(
+                          color: AppColors.textMain,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropdownTeamValue = value!;
+                          });
+                        },
+                        icon: SizedBox.shrink(),
+                        underline: SizedBox(),
+                        borderRadius: BorderRadius.circular(12),
+                        items:
+                            team.map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-
-            SizedBox(height: 25),
-            Text(
-              "Maches",
-              style: AppTextStyles.title1.copyWith(color: AppColors.primary),
-            ),
-
-            SizedBox(height: 5),
-            Row(
-              children: [
-                DropdownButton<String>(
-                  value: dropdownValue,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items:
-                      list.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                ),
-                 SizedBox(width: 25),
-                DropdownButton<String>(
-                  value: dropdownTeamValue,
-                  onChanged: (String? value) {
-                    setState(() {
-                      dropdownTeamValue = value!;
-                    });
-                  },
-                  items:
-                      team.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 25),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DetailsMatch()),
-                );
-              },
-              child: CardMatch(),
-            ),
-            SizedBox(height: 25),
-            CardMatch(),
-          ],
+        
+              SizedBox(height: 25),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailsMatch()),
+                  );
+                },
+                child: CardMatch(),
+              ),
+              SizedBox(height: 25),
+              CardMatch(),
+              SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

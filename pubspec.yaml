@@ -41,6 +41,8 @@ dependencies:
   dio: ^5.8.0+1
   font_awesome_flutter: ^10.8.0
   qr_flutter: ^4.1.0
+  qr_code_scanner_plus: ^2.0.10+1
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
