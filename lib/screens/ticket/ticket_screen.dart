@@ -26,7 +26,11 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: const Text('Ticket')),
+      appBar: AppBar(
+        leading: BackButton(),
+        centerTitle: true,
+        title: const Text('Ticket'),
+      ),
       body: Column(
         children: [
           const SizedBox(height: 16),
@@ -38,11 +42,20 @@ class _TicketScreenState extends State<TicketScreen> {
                 if (state is TicketLoaded) {
                   List<Ticket> tickets = state.tickets;
 
+                  // Lọc vé theo tab
+                  List<Ticket> filteredTickets = tickets.where((ticket) {
+                    if (selectedIndex == 0) {
+                      return !ticket.isUsed; // vé chưa dùng
+                    } else {
+                      return ticket.isUsed;  // vé đã dùng
+                    }
+                  }).toList();
+
                   return ListView.builder(
-                    itemCount: tickets.length,
+                    itemCount: filteredTickets.length,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
-                      return _buildTicketItem(tickets[index]);
+                      return _buildTicketItem(filteredTickets[index]);
                     },
                   );
                 } else {
@@ -65,7 +78,10 @@ class _TicketScreenState extends State<TicketScreen> {
         border: Border.all(color: Colors.blue),
       ),
       child: Row(
-        children: [_buildTabButton('Unused', 0), _buildTabButton('Used', 1)],
+        children: [
+          _buildTabButton('Unused', 0),
+          _buildTabButton('Used', 1),
+        ],
       ),
     );
   }
@@ -104,11 +120,10 @@ class _TicketScreenState extends State<TicketScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder:
-                (context) => TicketDetailScreen(
-                  matchName: ticket.matchName,
-                  qrData: ticket.matchName + ticket.dateTime,
-                ),
+            builder: (context) => TicketDetailScreen(
+              matchName: ticket.matchName,
+              qrData: ticket.matchName + ticket.dateTime,
+            ),
           ),
         );
       },
