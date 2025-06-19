@@ -6,6 +6,7 @@ import '/blocs/ticket/ticket_event.dart';
 import '/blocs/ticket/ticket_state.dart';
 import '/models/ticket_model.dart';
 import '/screens/ticket/ticket_detail_screen.dart';
+import '/core/constants/colors.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen({super.key});
@@ -26,9 +27,13 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Ticket'),
+        backgroundColor: AppColors.background,
+        titleTextStyle: new TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textMain),
+
       ),
       body: Column(
         children: [
@@ -42,11 +47,7 @@ class _TicketScreenState extends State<TicketScreen> {
                   List<Ticket> tickets = state.tickets;
 
                   List<Ticket> filteredTickets = tickets.where((ticket) {
-                    if (selectedIndex == 0) {
-                      return !ticket.isUsed;
-                    } else {
-                      return ticket.isUsed;
-                    }
+                    return selectedIndex == 0 ? !ticket.isUsed : ticket.isUsed;
                   }).toList();
 
                   return ListView.builder(
@@ -73,7 +74,7 @@ class _TicketScreenState extends State<TicketScreen> {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.blue),
+        border: Border.all(color: AppColors.primary), // ✅
       ),
       child: Row(
         children: [
@@ -96,14 +97,14 @@ class _TicketScreenState extends State<TicketScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.blue : Colors.transparent,
+            color: isSelected ? AppColors.secondary : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
+              color: isSelected ? AppColors.textMain : AppColors.textMain,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -126,7 +127,8 @@ class _TicketScreenState extends State<TicketScreen> {
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blue),
+          color: AppColors.white, // ✅ nền item
+          border: Border.all(color: AppColors.primary),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -146,12 +148,13 @@ class _TicketScreenState extends State<TicketScreen> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: AppColors.textMain,
                     ),
                   ),
                   const SizedBox(height: 4),
-                  Text(ticket.dateTime),
+                  Text(ticket.dateTime, style: const TextStyle(color: AppColors.textSub)),
                   const SizedBox(height: 4),
-                  Text('Số lượng vé: ${ticket.quantity}'),
+                  Text('Số lượng vé: ${ticket.quantity}', style: const TextStyle(color: AppColors.textSub)),
                 ],
               ),
             ),
