@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/components/match_details/card_stand.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/screens/cart/cart_screen.dart';
 
 class DetailsMatch extends StatefulWidget {
   DetailsMatch({super.key});
@@ -208,17 +209,22 @@ class _DetailsMatchState extends State<DetailsMatch> {
               ],
             ),
             Spacer(),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: 55,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Center(
-                child: Text(
-                  "Add to Cart",
-                  style: AppTextStyles.title1.copyWith(color: Colors.white),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen()));
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 55,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(
+                  child: Text(
+                    "Add to Cart",
+                    style: AppTextStyles.title1.copyWith(color: Colors.white),
+                  ),
                 ),
               ),
             ),

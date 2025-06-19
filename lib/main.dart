@@ -15,8 +15,9 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-      BlocProvider(create: (_)=> TicketBloc()),
+      providers: [
+        BlocProvider(create: (_) => AuthBloc(AuthRepository())),
+        BlocProvider(create: (_) => TicketBloc()),
       ],
       child: const MyApp(),
     ),

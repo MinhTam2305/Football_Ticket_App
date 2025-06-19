@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/screens/staff/report.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class HomeStaff extends StatefulWidget {
@@ -24,7 +25,19 @@ class _HomeStaffState extends State<HomeStaff> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Check ticket", style: AppTextStyles.title1),
-            Icon(Icons.error_outline, color: AppColors.error, size: 25),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Report()),
+                );
+              },
+              child: Icon(
+                Icons.error_outline,
+                color: AppColors.error,
+                size: 25,
+              ),
+            ),
           ],
         ),
       ),

@@ -34,7 +34,7 @@ class CartScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/images/vietnamFlag.jpg  ',
+                        'assets/images/vietnamFlag.jpg',
                         width: 60,
                         height: 40,
                         fit: BoxFit.cover,
