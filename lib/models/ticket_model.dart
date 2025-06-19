@@ -3,13 +3,17 @@ class Ticket {
   final String dateTime;
   final int quantity;
   final bool isUsed;
-  final String ticketCode; // <-- thêm field này
+  final String buyerName;
+  final String location;
+  final String stand;
 
   Ticket({
     required this.matchName,
     required this.dateTime,
     required this.quantity,
     required this.isUsed,
-    required this.ticketCode, // <-- thêm required
+    required this.buyerName,
+    required this.location,
+    required this.stand,
   });
 }
