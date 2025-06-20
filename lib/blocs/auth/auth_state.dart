@@ -45,3 +45,10 @@ class CurrentUserLoaded extends AuthState{
   final UserModel currentUser;
   CurrentUserLoaded(this.currentUser);
 }
+class Logined extends AuthState{
+ final String message;
+  Logined(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

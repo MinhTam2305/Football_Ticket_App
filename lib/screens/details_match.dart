@@ -39,7 +39,14 @@ class _DetailsMatchState extends State<DetailsMatch> {
           children: [
             SizedBox(width: 0),
             Text("Match details", style: AppTextStyles.title2),
-            Icon(Icons.shopping_cart_outlined),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartScreen()),
+                  );
+              },
+              child: Icon(Icons.shopping_cart_outlined)),
           ],
         ),
       ),

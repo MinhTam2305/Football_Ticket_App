@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:football_ticket/screens/auth/login.dart';
+import 'package:football_ticket/screens/auth/login_screen.dart';
 import 'package:football_ticket/screens/auth/signup.dart';
 
 class ToggleAuth extends StatefulWidget {
@@ -21,7 +21,7 @@ class _ToggleAuthState extends State<ToggleAuth> {
   @override
   Widget build(BuildContext context) {
     if (showLogin) {
-      return Login(onTap: togglePage);
+      return LoginScreen(onTap: togglePage);
     } else {
       return Signup(onTap: togglePage);
     }

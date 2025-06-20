@@ -4,7 +4,7 @@ class TicketRepository {
   static Future<List<Ticket>> getTicketsByPhone(String phone) async {
     await Future.delayed(const Duration(seconds: 1));
 
-    if (phone == '0966429198') {
+    if (phone == '12345') {
       return [
         Ticket(
           matchName: 'Viet Nam vs Malaysia',

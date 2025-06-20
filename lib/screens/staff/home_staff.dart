@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
 import 'package:football_ticket/screens/staff/report.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
@@ -25,6 +26,17 @@ class _HomeStaffState extends State<HomeStaff> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text("Check ticket", style: AppTextStyles.title1),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ManualCheckTicketScreen(),
+                  ),
+                );
+              },
+              child: Icon(Icons.search, color: AppColors.primary, size: 35),
+            ),
             GestureDetector(
               onTap: () {
                 Navigator.push(

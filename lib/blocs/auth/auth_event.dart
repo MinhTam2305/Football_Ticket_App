@@ -38,3 +38,13 @@ class OtpSentEvent extends AuthEvent {
   @override
   List<Object?> get props => [verificationId];
 }
+
+class Login extends AuthEvent{
+  final String phoneNumber;
+  final String password;
+
+  Login (this.phoneNumber,this.password);
+
+  @override
+  List<Object?> get props => [phoneNumber,password];
+}

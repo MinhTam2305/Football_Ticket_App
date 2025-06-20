@@ -1,10 +1,24 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:football_ticket/models/user_model.dart';
+import 'package:dio/io.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Dio _dio = Dio(BaseOptions(baseUrl: ""));
+
+  final Dio _dio;
+
+  AuthRepository()
+    : _dio = Dio(BaseOptions(baseUrl: "https://10.0.2.2:7023/api/")) {
+    (_dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      final client = HttpClient();
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+      return client;
+    };
+  }
 
   //Send opt
   Future<void> sendOtp({
@@ -53,5 +67,25 @@ class AuthRepository {
 
   User? getCurrentUser() {
     return _auth.currentUser;
+  }
+
+  Future<Map<String, dynamic>> login(String phone, String password) async {
+    try {
+      final response = await _dio.post(
+        'auth/login',
+        data: {'phoneNumber': phone, 'password': password},
+      );
+      return response.data;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        final errors = e.response?.data['errors'];
+        final errorMsg = errors?.entries
+            .map((e) => "${e.key}: ${e.value.join(', ')}")
+            .join('\n');
+        throw Exception(errorMsg ?? "Yêu cầu không hợp lệ");
+      } else {
+        throw Exception("Lỗi không xác định");
+      }
+    }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_event.dart';
 import 'package:football_ticket/blocs/auth/auth_state.dart';
@@ -13,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyForgetPasswordOtpRequested>(_verifyForgetPasswordOtp);
     on<OtpSentEvent>((event, emit) => emit(OtpSent(event.verificationId)));
     on<GetCurrentUserRequested>(_getUser);
+    on<Login>(_login);
   }
 
   Future<void> _sendOpt(SendOtpRequetsed event, Emitter<AuthState> emit) async {
@@ -76,6 +79,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
     } else {
       emit(AuthFailure("No user logged in"));
+    }
+  }
+
+  Future<void> _login(Login event, Emitter<AuthState> emit) async {
+    print("Login event received");
+    emit(AuthLoading());
+    try {
+      final response = await _authRepo.login(event.phoneNumber, event.password);
+      print("Login response: $response");
+      if (response["success"] == true) {
+        emit(AuthSuccess(UserModel(uid: event.phoneNumber,)));
+      } else {
+        emit(AuthFailure(response['message'] ?? "Đăng nhập thất bại"));
+      }
+    } catch (e) {
+      print("Login error: $e");
+      emit(AuthFailure(e.toString()));
     }
   }
 }

@@ -11,6 +11,7 @@ import 'package:football_ticket/components/home/card_highlight.dart';
 import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
+import 'package:football_ticket/screens/cart/cart_screen.dart';
 import 'package:football_ticket/screens/changpassword_page.dart';
 import 'package:football_ticket/screens/details_match.dart';
 
@@ -102,13 +103,11 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangpasswordPage(),
-                    ),
+                    MaterialPageRoute(builder: (context) => CartScreen()),
                   );
                 },
                 child: Icon(
-                  FontAwesomeIcons.cartShopping,
+                  Icons.shopping_cart_outlined,
                   color: AppColors.grey,
                 ),
               ),
@@ -119,7 +118,7 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20),
-        
+
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -143,13 +142,13 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-        
+
               SizedBox(height: 25),
               Text(
                 "Maches",
                 style: AppTextStyles.title1.copyWith(color: AppColors.primary),
               ),
-        
+
               SizedBox(height: 5),
               Row(
                 children: [
@@ -225,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-        
+
               SizedBox(height: 25),
               GestureDetector(
                 onTap: () {
@@ -237,7 +236,25 @@ class _HomePageState extends State<HomePage> {
                 child: CardMatch(),
               ),
               SizedBox(height: 25),
-              CardMatch(),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailsMatch()),
+                  );
+                },
+                child: CardMatch(),
+              ),
+              SizedBox(height: 25),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailsMatch()),
+                  );
+                },
+                child: CardMatch(),
+              ),
               SizedBox(height: 10),
             ],
           ),

@@ -5,19 +5,20 @@ import 'package:football_ticket/blocs/auth/auth_event.dart';
 import 'package:football_ticket/blocs/auth/auth_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/screens/auth/opt_screen.dart';
+import 'package:football_ticket/screens/bottom_navigation.dart';
 import 'package:football_ticket/widgets/button_custom.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
 
-class Login extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   void Function()? onTap;
 
-  Login({super.key, this.onTap});
+  LoginScreen({super.key, this.onTap});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginScreen> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<LoginScreen> {
   bool isLoading = false;
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -29,10 +30,31 @@ class _LoginState extends State<Login> {
     super.dispose();
   }
 
-  void login() {
+  void login(String phone, String password) {
     setState(() {
       isLoading = true;
     });
+    if (phone.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    if (phone.length < 9) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Số điện thoại không hợp lệ!')),
+      );
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    context.read<AuthBloc>().add(Login(phone, password));
   }
 
   void forgetPassword(String phone) {
@@ -65,6 +87,26 @@ class _LoginState extends State<Login> {
                   ),
             ),
           );
+        }
+        if (state is AuthSuccess) {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Đăng nhập thành công')));
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => BottomNavigation()),
+          );
+        }
+        if (state is AuthFailure) {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text("Loi: ${state.message}")));
         }
       },
       child: Scaffold(
@@ -120,7 +162,15 @@ class _LoginState extends State<Login> {
                 SizedBox(height: 55),
 
                 //btn Login
-                ButtonCustom(text: "Login", opTap: login, isLoading: isLoading),
+                ButtonCustom(
+                  text: "Login",
+                  opTap:
+                      () => login(
+                        _phoneController.text,
+                        _passwordController.text,
+                      ),
+                  isLoading: isLoading,
+                ),
                 SizedBox(height: 28),
 
                 GestureDetector(
