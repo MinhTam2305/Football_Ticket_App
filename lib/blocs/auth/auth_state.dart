@@ -17,6 +17,8 @@ class OtpSent extends AuthState {
   List<Object?> get props => [verificationId];
 }
 
+class OptSentSuccessed extends AuthState {}
+
 class AuthSuccess extends AuthState {
   final UserModel user;
   AuthSuccess(this.user);
@@ -25,7 +27,7 @@ class AuthSuccess extends AuthState {
   List<Object?> get props => [user];
 }
 
-class VerifySuccess extends AuthState{
+class VerifySuccess extends AuthState {
   final UserModel user;
   VerifySuccess(this.user);
 
@@ -41,13 +43,31 @@ class AuthFailure extends AuthState {
   List<Object?> get props => [message];
 }
 
-class CurrentUserLoaded extends AuthState{
+class CurrentUserLoaded extends AuthState {
   final UserModel currentUser;
   CurrentUserLoaded(this.currentUser);
 }
-class Logined extends AuthState{
- final String message;
-  Logined(this.message);
+
+class TokenRetrieved extends AuthState {
+  final String id;
+  TokenRetrieved(this.id);
+
+  @override
+  List<Object?> get props => [id];
+}
+
+class Logined extends AuthState {
+  final UserModel user;
+  Logined(this.user);
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class RestPasswordSuccessed extends AuthState {
+  final String message;
+
+  RestPasswordSuccessed(this.message);
 
   @override
   List<Object?> get props => [message];

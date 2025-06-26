@@ -6,10 +6,6 @@ import 'package:football_ticket/blocs/ticket/ticket_bloc.dart';
 import 'package:football_ticket/blocs/ticket_check/ticket_check_bloc.dart';
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/repositories/auth_repository.dart';
-import 'package:football_ticket/screens/bottom_navigation.dart';
-import 'package:football_ticket/screens/home_page.dart';
-import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
-import 'package:football_ticket/screens/ticket/ticket_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -38,7 +34,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: BottomNavigation(),
+      home: ToggleAuth(),
     );
   }
 }

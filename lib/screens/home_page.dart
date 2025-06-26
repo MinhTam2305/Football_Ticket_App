@@ -12,7 +12,7 @@ import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
-import 'package:football_ticket/screens/changpassword_page.dart';
+import 'package:football_ticket/screens/auth/changpassword_page.dart';
 import 'package:football_ticket/screens/details_match.dart';
 
 class HomePage extends StatefulWidget {
@@ -36,12 +36,7 @@ class _HomePageState extends State<HomePage> {
   int _currentPage = 0;
   Timer? _timer;
 
-  UserModel userTest = UserModel(
-    uid: "123456",
-    name: "Tam",
-    phoneNumber: "0399302970",
-    role: "user",
-  );
+
 
   String dropdownValue = list.first;
   String dropdownTeamValue = team.first;
@@ -74,192 +69,212 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // return BlocBuilder<AuthBloc, AuthState>(
-    //   builder: (context, state) {
-    //     if (state is CurrentUserLoaded) {
-    //       final user = state.currentUser;
-    //       return home(user);
-    //     } else if (state is AuthFailure) {
-    //       return Text('Lỗi: ${state.message}');
-    //     }
-    //     return Center(child: CircularProgressIndicator());
-    //   },
-    // );
-    if (userTest.name == null) {
-      return Center(child: CircularProgressIndicator());
-    }
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: AppColors.background,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 7),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("Hi ${userTest.name!}", style: AppTextStyles.title2),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CartScreen()),
-                  );
-                },
-                child: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: AppColors.grey,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              Text(
-                "Highlight Match",
-                style: AppTextStyles.title2.copyWith(color: AppColors.textMain),
-              ),
-              SizedBox(height: 15),
-              SizedBox(
-                height: 215,
-                child: PageView(
-                  controller: _pageController,
-                  scrollDirection: Axis.horizontal,
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is Logined) {
+          final user = state.user;
+          if (user.name == null) {
+            return Center(child: CircularProgressIndicator());
+          }
+          return Scaffold(
+            backgroundColor: AppColors.background,
+            appBar: AppBar(
+              backgroundColor: AppColors.background,
+              title: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 7),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CardHighlight(),
-                    CardHighlight(),
-                    CardHighlight(),
-                    CardHighlight(),
-                    CardHighlight(),
+                    Text("Hi ${user.name!}", style: AppTextStyles.title2),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CartScreen()),
+                        );
+                      },
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: AppColors.grey,
+                      ),
+                    ),
                   ],
                 ),
               ),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
 
-              SizedBox(height: 25),
-              Text(
-                "Maches",
-                style: AppTextStyles.title1.copyWith(color: AppColors.primary),
-              ),
-
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  Container(
-                    width: 140,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondary,
-                      border: Border.all(color: AppColors.primary, width: 2),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Center(
-                      child: DropdownButton<String>(
-                        value: dropdownValue,
-                        style: const TextStyle(
-                          color: AppColors.textMain,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        onChanged: (String? value) {
-                          setState(() {
-                            dropdownValue = value!;
-                          });
-                        },
-                        elevation: 5,
-                        dropdownColor: AppColors.secondary,
-                        borderRadius: BorderRadius.circular(12),
-                        icon: SizedBox.shrink(),
-                        underline: SizedBox(),
-                        items:
-                            list.map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 20),
+                    Text(
+                      "Highlight Match",
+                      style: AppTextStyles.title2.copyWith(
+                        color: AppColors.textMain,
                       ),
                     ),
-                  ),
-                  SizedBox(width: 25),
-                  Container(
-                    width: 140,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.primary, width: 2),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Center(
-                      child: DropdownButton<String>(
-                        value: dropdownTeamValue,
-                        style: const TextStyle(
-                          color: AppColors.textMain,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        onChanged: (String? value) {
-                          setState(() {
-                            dropdownTeamValue = value!;
-                          });
-                        },
-                        icon: SizedBox.shrink(),
-                        underline: SizedBox(),
-                        borderRadius: BorderRadius.circular(12),
-                        items:
-                            team.map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                    SizedBox(height: 15),
+                    SizedBox(
+                      height: 215,
+                      child: PageView(
+                        controller: _pageController,
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          CardHighlight(),
+                          CardHighlight(),
+                          CardHighlight(),
+                          CardHighlight(),
+                          CardHighlight(),
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
 
-              SizedBox(height: 25),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailsMatch()),
-                  );
-                },
-                child: CardMatch(),
+                    SizedBox(height: 25),
+                    Text(
+                      "Maches",
+                      style: AppTextStyles.title1.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        Container(
+                          width: 140,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.secondary,
+                            border: Border.all(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Center(
+                            child: DropdownButton<String>(
+                              value: dropdownValue,
+                              style: const TextStyle(
+                                color: AppColors.textMain,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  dropdownValue = value!;
+                                });
+                              },
+                              elevation: 5,
+                              dropdownColor: AppColors.secondary,
+                              borderRadius: BorderRadius.circular(12),
+                              icon: SizedBox.shrink(),
+                              underline: SizedBox(),
+                              items:
+                                  list.map<DropdownMenuItem<String>>((
+                                    String value,
+                                  ) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 25),
+                        Container(
+                          width: 140,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Center(
+                            child: DropdownButton<String>(
+                              value: dropdownTeamValue,
+                              style: const TextStyle(
+                                color: AppColors.textMain,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  dropdownTeamValue = value!;
+                                });
+                              },
+                              icon: SizedBox.shrink(),
+                              underline: SizedBox(),
+                              borderRadius: BorderRadius.circular(12),
+                              items:
+                                  team.map<DropdownMenuItem<String>>((
+                                    String value,
+                                  ) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 25),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsMatch(),
+                          ),
+                        );
+                      },
+                      child: CardMatch(),
+                    ),
+                    SizedBox(height: 25),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsMatch(),
+                          ),
+                        );
+                      },
+                      child: CardMatch(),
+                    ),
+                    SizedBox(height: 25),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailsMatch(),
+                          ),
+                        );
+                      },
+                      child: CardMatch(),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
-              SizedBox(height: 25),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailsMatch()),
-                  );
-                },
-                child: CardMatch(),
-              ),
-              SizedBox(height: 25),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailsMatch()),
-                  );
-                },
-                child: CardMatch(),
-              ),
-              SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else if (state is AuthFailure) {
+          print('Lỗi: ${state.message}');
+          return Text('Lỗi: ${state.message}');
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

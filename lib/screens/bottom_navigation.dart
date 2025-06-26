@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
-import 'package:football_ticket/screens/change_password_from_forget.dart';
+import 'package:football_ticket/screens/auth/change_password_from_forget.dart';
 import 'package:football_ticket/screens/home_page.dart';
 import 'package:football_ticket/screens/staff/home_staff.dart';
 import 'package:football_ticket/screens/ticket/ticket_screen.dart';

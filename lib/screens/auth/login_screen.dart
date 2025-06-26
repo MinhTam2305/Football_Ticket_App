@@ -68,7 +68,7 @@ class _LoginState extends State<LoginScreen> {
       );
       return;
     } else {
-      context.read<AuthBloc>().add(SendOtpRequetsed(phone));
+      context.read<AuthBloc>().add(SendOtpRequetsed(phone,true));
     }
   }
 
@@ -87,8 +87,7 @@ class _LoginState extends State<LoginScreen> {
                   ),
             ),
           );
-        }
-        if (state is AuthSuccess) {
+        } else if (state is TokenRetrieved) {
           setState(() {
             isLoading = false;
           });
@@ -99,8 +98,7 @@ class _LoginState extends State<LoginScreen> {
             context,
             MaterialPageRoute(builder: (context) => BottomNavigation()),
           );
-        }
-        if (state is AuthFailure) {
+        } else if (state is AuthFailure) {
           setState(() {
             isLoading = false;
           });
@@ -171,12 +169,12 @@ class _LoginState extends State<LoginScreen> {
                       ),
                   isLoading: isLoading,
                 ),
-                SizedBox(height: 28),
+                SizedBox(height: 18),
 
                 GestureDetector(
                   onTap: widget.onTap,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         "Don’t have an account? ",

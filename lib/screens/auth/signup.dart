@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_event.dart';
 import 'package:football_ticket/blocs/auth/auth_state.dart';
+import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/auth/opt_screen.dart';
 
 import '../../core/constants/colors.dart';
@@ -23,30 +24,47 @@ class _SignupState extends State<Signup> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   void signup() {
+    final hasUppercase = RegExp(r'[A-Z]');
+    final hasSpecialChar = RegExp(r'[!@#\$&*~%^()_\-+=<>?/\\{}[\]|.,;:]');
+
     final name = _nameController.text.trim();
     final phone = _phoneController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-
-    // if (name.isEmpty || phone.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
-    //   );
-    //   return;
-    // }
-    // if (password != confirmPassword) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('Mật khẩu không khớp!')),
-    //   );
-    //   return;
-    // }
+    if (name.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
+      );
+      return;
+    }
     if (phone.length < 9) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Số điện thoại không hợp lệ!')),
+      );
+      return;
+    }
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Mật khẩu không khớp!')));
+      return;
+    }
+    if (!hasUppercase.hasMatch(password) ||
+        !hasSpecialChar.hasMatch(password)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Mật khẩu phải có ít nhất 1 chữ in hoa và 1 ký tự đặc biệt!',
+          ),
+        ),
       );
       return;
     }
@@ -54,7 +72,7 @@ class _SignupState extends State<Signup> {
     setState(() {
       isLoading = true;
     });
-    context.read<AuthBloc>().add(SendOtpRequetsed(phone));
+    context.read<AuthBloc>().add(SendOtpRequetsed(phone, false));
   }
 
   @override
@@ -70,6 +88,15 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
+        if (state is AuthFailure) {
+          setState(() {
+            isLoading = false;
+          });
+
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
         if (state is OtpSent) {
           setState(() {
             isLoading = false;
@@ -77,19 +104,18 @@ class _SignupState extends State<Signup> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => OtpScreen(verificationId: state.verificationId,isForgetPassword: false, ),
+              builder:
+                  (context) => OtpScreen(
+                    verificationId: state.verificationId,
+                    name: _nameController.text.trim(),
+                    phone: _phoneController.text.trim(),
+                    password: _passwordController.text.trim(),
+                    isForgetPassword: false,
+                  ),
             ),
           );
         }
-        if (state is AuthFailure) {
-          setState(() {
-            isLoading = false;
-          });
-      
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
-        }
+          
       },
       child: Scaffold(
         backgroundColor: AppColors.white,
