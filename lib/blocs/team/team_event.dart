@@ -5,11 +5,13 @@ abstract class TeamEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadTeamByEvent extends TeamEvent {
+class LoadTeamByIdEvent extends TeamEvent {
   final String id;
 
-  LoadTeamByEvent(this.id);
+  LoadTeamByIdEvent(this.id);
 
   @override
   List<Object?> get props => [id];
 }
+
+class LoadTeamEvent extends TeamEvent {}

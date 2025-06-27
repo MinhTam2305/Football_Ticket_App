@@ -16,7 +16,7 @@ class TeamModel {
       teamId: json['teamId'],
       teamName: json['teamName'],
       description: json['description'],
-      logo: json['logo'],
+      logo: "https://localhost:7023${json['logo']}",
     );
   }
 }

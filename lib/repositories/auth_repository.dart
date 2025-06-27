@@ -130,7 +130,7 @@ class AuthRepository {
         final errorMsg = errors?.entries
             .map((e) => "${e.key}: ${e.value.join(', ')}")
             .join('\n');
-        throw Exception(errorMsg ?? "Yêu cầu không hợp lệ");
+        throw Exception(errorMsg ?? "Thông tin tài khoản hoặc mật khẩu chưa đúng!");
       } else {
         throw Exception("Lỗi không xác định");
       }

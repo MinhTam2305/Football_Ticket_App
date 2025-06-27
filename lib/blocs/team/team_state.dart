@@ -11,8 +11,16 @@ class TeamInitial extends TeamState {}
 class TeamLoading extends TeamState {}
 
 class TeamLoaded extends TeamState {
-  final TeamModel teamModel;
+  final List<TeamModel> teamModel;
   TeamLoaded(this.teamModel);
+
+  @override
+  List<Object?> get props => [teamModel];
+}
+
+class TeamByIdLoaded extends TeamState {
+  final TeamModel teamModel;
+  TeamByIdLoaded(this.teamModel);
 
   @override
   List<Object?> get props => [teamModel];

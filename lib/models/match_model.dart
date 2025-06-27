@@ -1,4 +1,5 @@
 import 'package:football_ticket/models/team_model.dart';
+import 'package:intl/intl.dart';
 
 class MatchModel {
   final String matchId;
@@ -25,9 +26,10 @@ class MatchModel {
       awayTeam: TeamModel.fromJson(json['awayTeam']),
     );
   }
+  String get matchDate =>
+      DateFormat('dd/MM').format(matchDateTime.toLocal());
+           String get matchDateMY =>
+      DateFormat('dd/MM/yyyy').format(matchDateTime.toLocal());
 
-  @override
-  String toString() {
-    return 'MatchModel(matchId: $matchId, homeTeamId: $homeTeamId, awayTeamId: $awayTeamId, matchDateTime: $matchDateTime, homeTeam: $homeTeam, awayTeam: $awayTeam)';
-  }
+  String get matchTime => DateFormat('HH:mm').format(matchDateTime.toLocal());
 }

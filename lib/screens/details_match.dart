@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/components/match_details/card_stand.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/models/match_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 
 class DetailsMatch extends StatefulWidget {
-  DetailsMatch({super.key});
+  final MatchModel match;
+  const DetailsMatch({super.key, required this.match});
 
   @override
   State<DetailsMatch> createState() => _DetailsMatchState();
@@ -42,11 +43,12 @@ class _DetailsMatchState extends State<DetailsMatch> {
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CartScreen()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (context) => CartScreen()),
+                );
               },
-              child: Icon(Icons.shopping_cart_outlined)),
+              child: Icon(Icons.shopping_cart_outlined),
+            ),
           ],
         ),
       ),
@@ -75,7 +77,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                               height: 60,
                             ),
                             Text(
-                              "VietNam",
+                              widget.match.homeTeam.teamName,
                               style: AppTextStyles.body1.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -90,7 +92,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                               height: 60,
                             ),
                             Text(
-                              "Malaysia",
+                              widget.match.awayTeam.teamName,
                               style: AppTextStyles.body1.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -99,6 +101,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 5),
                     Text(
                       "VS",
                       style: AppTextStyles.title1.copyWith(
@@ -120,9 +123,19 @@ class _DetailsMatchState extends State<DetailsMatch> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Icon(Icons.date_range_outlined, color: AppColors.grey),
+                        SizedBox(width: 5),
+                        Text(
+                          widget.match.matchDateMY,
+                          style: AppTextStyles.body1,
+                        ),
+                        SizedBox(width: 15),
                         Icon(Icons.timer_sharp, color: AppColors.grey),
                         SizedBox(width: 5),
-                        Text("15/06 8.00 pm", style: AppTextStyles.body1),
+                        Text(
+                          widget.match.matchTime,
+                          style: AppTextStyles.body1,
+                        ),
                       ],
                     ),
                   ],
@@ -218,7 +231,10 @@ class _DetailsMatchState extends State<DetailsMatch> {
             Spacer(),
             GestureDetector(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>CartScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CartScreen()),
+                );
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,

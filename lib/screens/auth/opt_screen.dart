@@ -5,7 +5,7 @@ import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/screens/auth/login_screen.dart';
 import 'package:football_ticket/screens/bottom_navigation.dart';
 import 'package:football_ticket/screens/auth/change_password_from_forget.dart';
-import 'package:football_ticket/screens/home_page.dart';
+import 'package:football_ticket/screens/tabs/home_page.dart';
 import '../../../blocs/auth/auth_bloc.dart';
 import '../../../blocs/auth/auth_event.dart';
 import '../../../blocs/auth/auth_state.dart';

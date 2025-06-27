@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/models/match_model.dart';
 
 class CardMatch extends StatelessWidget {
-  const CardMatch({super.key});
+  final MatchModel match;
+  const CardMatch({super.key,required this.match});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class CardMatch extends StatelessWidget {
                     width: 60,
                     height: 50,
                   ),
-                  Text("VietNam", style: AppTextStyles.body1),
+                  Text(match.homeTeam.teamName, style: AppTextStyles.body1),
                 ],
               ),
 
@@ -45,7 +47,7 @@ class CardMatch extends StatelessWidget {
                     width: 60,
                     height: 50,
                   ),
-                  Text("Malaysia", style: AppTextStyles.body1),
+                  Text(match.awayTeam.teamName, style: AppTextStyles.body1),
                 ],
               ),
             ],
@@ -59,7 +61,9 @@ class CardMatch extends StatelessWidget {
                 children: [
                   Icon(Icons.timer_sharp, color: AppColors.grey),
                   SizedBox(width: 5),
-                  Text("15/06 8.00 pm", style: AppTextStyles.body2),
+                  Text(match.matchDate, style: AppTextStyles.body2),
+                  SizedBox(width: 8),
+                  Text(match.matchTime, style: AppTextStyles.body2),
                 ],
               ),
               SizedBox(width: 70),
