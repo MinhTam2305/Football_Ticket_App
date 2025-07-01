@@ -26,7 +26,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   void initState() {
     super.initState();
     user = widget.user;
-    if (user.role == "User") {
+    if (user.role == "User" || user.role == "Admin") {
       isUser = true;
     } else {
       isUser = false;

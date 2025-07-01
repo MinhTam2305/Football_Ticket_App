@@ -33,8 +33,8 @@ class CardMatch extends StatelessWidget {
               children: [
                 Column(
                   children: [
-                    Image.asset(
-                      "assets/images/vietnamFlag.jpg",
+                    Image.network(
+                      match.homeTeam.logo,
                       width: 60,
                       height: 50,
                     ),
@@ -44,8 +44,8 @@ class CardMatch extends StatelessWidget {
 
                 Column(
                   children: [
-                    Image.asset(
-                      "assets/images/malaysia.png",
+                    Image.network(
+                      match.awayTeam.logo,
                       width: 60,
                       height: 50,
                     ),
