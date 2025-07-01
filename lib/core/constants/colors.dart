@@ -7,11 +7,12 @@ class AppColors {
   static const error = Color(0xFFD32F2F);
   static const warning = Color(0xFFFFA000);
   static const background = Color(0xFFF5F5F5);
+  //   static const background = Color.fromARGB(255, 212, 225, 235);
   static const textMain = Color(0xFF212121);
   static const textSub = Color(0xFF757575);
   static const white = Color(0xFFFFFFFF);
   static const grey = Color(0xFF757575);
-  static const secondary_bg = Color(0xFFBDD8E9);
+  static const secondary_bg = Color.fromARGB(255, 208, 221, 230);
 }
 
 class AppTextStyles {

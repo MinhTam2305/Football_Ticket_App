@@ -18,6 +18,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<Login>(_login);
     on<GetUserById>(_getUserFromDb);
     on<ResetPassword>(_resetPassword);
+    on<ChangePassword>(_changePassword);
   }
 
   Future<void> _sendOpt(SendOtpRequetsed event, Emitter<AuthState> emit) async {
@@ -53,7 +54,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               if (!emit.isDone) emit(AuthFailure(err));
             },
           );
-           emit(OptSentSuccessed());
+          emit(OptSentSuccessed());
         } else {
           emit(AuthFailure("Số điện thoại này đã được đăng ký."));
         }
@@ -159,9 +160,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         evet.newPassord,
       );
 
-      emit(RestPasswordSuccessed(message));
+      emit(ResestPasswordSuccessed(message));
     } catch (e) {
       emit(AuthFailure("$e"));
+    }
+  }
+
+  Future<void> _changePassword(
+    ChangePassword event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoading());
+    String message = "";
+    try {
+      message = await _authRepo.changePassword(
+        event.token,
+        event.currentPassword,
+        event.newPassword,
+      );
+      emit(ResestPasswordSuccessed(message));
+    } catch (e) {
+      if (message.isEmpty) {
+        emit(AuthFailure(e.toString()));
+      }
+      emit(AuthFailure(message));
     }
   }
 }

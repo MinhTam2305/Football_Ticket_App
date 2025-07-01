@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/components/match_details/card_stand.dart';
 import 'package:football_ticket/core/constants/colors.dart';
-import 'package:football_ticket/models/match_model.dart';
+import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 
 class DetailsMatch extends StatefulWidget {
-  final MatchModel match;
-  const DetailsMatch({super.key, required this.match});
+  final MatchDetailsModel detailsMatch;
+  const DetailsMatch({super.key, required this.detailsMatch});
 
   @override
   State<DetailsMatch> createState() => _DetailsMatchState();
@@ -77,7 +77,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                               height: 60,
                             ),
                             Text(
-                              widget.match.homeTeam.teamName,
+                              widget.detailsMatch.match.homeTeam.teamName,
                               style: AppTextStyles.body1.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -92,7 +92,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                               height: 60,
                             ),
                             Text(
-                              widget.match.awayTeam.teamName,
+                              widget.detailsMatch.match.awayTeam.teamName,
                               style: AppTextStyles.body1.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -126,14 +126,14 @@ class _DetailsMatchState extends State<DetailsMatch> {
                         Icon(Icons.date_range_outlined, color: AppColors.grey),
                         SizedBox(width: 5),
                         Text(
-                          widget.match.matchDateMY,
+                          widget.detailsMatch.match.matchDateMY,
                           style: AppTextStyles.body1,
                         ),
                         SizedBox(width: 15),
                         Icon(Icons.timer_sharp, color: AppColors.grey),
                         SizedBox(width: 5),
                         Text(
-                          widget.match.matchTime,
+                          widget.detailsMatch.match.matchTime,
                           style: AppTextStyles.body1,
                         ),
                       ],

@@ -14,7 +14,7 @@ Widget textFieldCustom(String label, IconData icon,TextEditingController control
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.secondary, width: 2),
+        borderSide: BorderSide(color: AppColors.primary, width: 2),
       ),
       prefixIcon: Icon(icon),
     ),

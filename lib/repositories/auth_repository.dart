@@ -91,6 +91,7 @@ class AuthRepository {
     try {
       final response = await _dio.post(
         'auth/check-phone',
+
         data: {'phoneNumber': phoneNumber},
       );
       if (response.statusCode == 200) {
@@ -130,7 +131,9 @@ class AuthRepository {
         final errorMsg = errors?.entries
             .map((e) => "${e.key}: ${e.value.join(', ')}")
             .join('\n');
-        throw Exception(errorMsg ?? "Thông tin tài khoản hoặc mật khẩu chưa đúng!");
+        throw Exception(
+          errorMsg ?? "Thông tin tài khoản hoặc mật khẩu chưa đúng!",
+        );
       } else {
         throw Exception("Lỗi không xác định");
       }
@@ -144,7 +147,16 @@ class AuthRepository {
         options: Options(headers: {'Authorization': 'Bearer $token'}),
       );
       if (response.statusCode == 200) {
-        return UserModel.fromJson(response.data);
+        final user = UserModel.fromJson(response.data);
+        final userWithToken = UserModel(
+          uid: user.uid,
+          name: user.name,
+          phoneNumber: user.phoneNumber,
+          role: user.role,
+          token: token,
+        );
+
+        return userWithToken;
       } else {
         throw "No user";
       }
@@ -157,6 +169,7 @@ class AuthRepository {
     try {
       final response = await _dio.post(
         'auth/reset-password',
+
         data: {"PhoneNumber": phone, "newPassword": newPassword},
       );
       if (response.statusCode == 200) {
@@ -165,6 +178,36 @@ class AuthRepository {
       return response.data['message'] ?? 'Có lỗi xảy ra';
     } catch (e) {
       throw Exception("Reset mật khẩu thất bại: $e");
+    }
+  }
+
+  Future<String> changePassword(
+    String token,
+    String currentPassword,
+    String newPassword,
+  ) async {
+    try {
+      final response = await _dio.post(
+        'auth/change-password',
+        options: Options(headers: {'Authorization': 'Bearer $token'}),
+        data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+      );
+
+      String message = response.data['message'];
+      return message;
+    } catch (e) {
+      if (e is DioException) {
+        final errors = e.response?.data['errors'];
+        if (errors is List && errors.contains("Incorrect password.")) {
+          throw Exception("Mật khẩu cũ không chính xác");
+        } else {
+          final msg = e.response?.data["message"] ?? 'Đổi mật khẩu thất bại';
+          throw Exception(msg);
+        }
+      }
+      else {
+        throw Exception("Lỗi không xác định: $e");
+      }
     }
   }
 }

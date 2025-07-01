@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_bloc.dart';
 import 'package:football_ticket/blocs/match/match_bloc.dart';
+import 'package:football_ticket/blocs/match_details/match_details_bloc.dart';
 import 'package:football_ticket/blocs/team/team_bloc.dart';
 import 'package:football_ticket/blocs/ticket/ticket_bloc.dart';
 import 'package:football_ticket/blocs/ticket_check/ticket_check_bloc.dart';
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/repositories/auth_repository.dart';
+import 'package:football_ticket/repositories/match_details_repository.dart';
 import 'package:football_ticket/repositories/match_repository.dart';
 import 'package:football_ticket/repositories/team_repository.dart';
 import 'firebase_options.dart';
@@ -23,6 +25,7 @@ void main() async {
         BlocProvider(create: (_) => TicketCheckBloc()),
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
+        BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
       ],
       child: const MyApp(),
     ),

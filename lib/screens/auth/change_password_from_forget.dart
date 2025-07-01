@@ -7,6 +7,7 @@ import 'package:football_ticket/blocs/auth/auth_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/models/user_model.dart';
+import 'package:football_ticket/screens/bottom_navigation.dart';
 import 'package:football_ticket/widgets/button_custom.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
 
@@ -87,17 +88,18 @@ class _ChangePasswordFromForgetState extends State<ChangePasswordFromForget> {
           setState(() {
             isLoading = true;
           });
-        } else if (state is RestPasswordSuccessed) {
-          final message = state.message;
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
+        } else if (state is ResestPasswordSuccessed) {
           setState(() {
             isLoading = false;
           });
-          Navigator.pushReplacement(
+
+          ScaffoldMessenger.of(
             context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+
+          Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => ToggleAuth()),
+            (route) => false,
           );
         } else if (state is AuthFailure) {
           setState(() {

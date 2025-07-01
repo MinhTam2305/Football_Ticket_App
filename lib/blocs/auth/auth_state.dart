@@ -64,10 +64,10 @@ class Logined extends AuthState {
   List<Object?> get props => [user];
 }
 
-class RestPasswordSuccessed extends AuthState {
+class ResestPasswordSuccessed extends AuthState {
   final String message;
 
-  RestPasswordSuccessed(this.message);
+  ResestPasswordSuccessed(this.message);
 
   @override
   List<Object?> get props => [message];

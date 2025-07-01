@@ -7,7 +7,9 @@ import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/screens/auth/opt_screen.dart';
 import 'package:football_ticket/screens/bottom_navigation.dart';
 import 'package:football_ticket/widgets/button_custom.dart';
+import 'package:football_ticket/widgets/show_loading_dialog.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginScreen extends StatefulWidget {
   void Function()? onTap;
@@ -19,7 +21,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginScreen> {
-  bool isLoading = false;
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -31,16 +32,11 @@ class _LoginState extends State<LoginScreen> {
   }
 
   void login(String phone, String password) {
-    setState(() {
-      isLoading = true;
-    });
     if (phone.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Vui lòng nhập đầy đủ thông tin!')),
       );
-      setState(() {
-        isLoading = false;
-      });
+
       return;
     }
 
@@ -48,12 +44,8 @@ class _LoginState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Số điện thoại không hợp lệ!')),
       );
-      setState(() {
-        isLoading = false;
-      });
-      return;
     }
-
+    showLoadingDialog(context);
     context.read<AuthBloc>().add(Login(phone, password));
   }
 
@@ -68,7 +60,7 @@ class _LoginState extends State<LoginScreen> {
       );
       return;
     } else {
-      context.read<AuthBloc>().add(SendOtpRequetsed(phone,true));
+      context.read<AuthBloc>().add(SendOtpRequetsed(phone, true));
     }
   }
 
@@ -77,6 +69,7 @@ class _LoginState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is OtpSent) {
+          Navigator.of(context).pop();
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -87,21 +80,20 @@ class _LoginState extends State<LoginScreen> {
                   ),
             ),
           );
-        } else if (state is TokenRetrieved) {
-          setState(() {
-            isLoading = false;
-          });
+        } else if (state is Logined) {
+          Navigator.of(context).pop();
+
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Đăng nhập thành công')));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => BottomNavigation()),
+            MaterialPageRoute(
+              builder: (context) => BottomNavigation(user: state.user),
+            ),
           );
         } else if (state is AuthFailure) {
-          setState(() {
-            isLoading = false;
-          });
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text("Loi: ${state.message}")));
@@ -167,7 +159,7 @@ class _LoginState extends State<LoginScreen> {
                         _phoneController.text,
                         _passwordController.text,
                       ),
-                  isLoading: isLoading,
+                  isLoading: false,
                 ),
                 SizedBox(height: 18),
 

@@ -10,18 +10,24 @@ import 'package:football_ticket/blocs/auth/auth_state.dart';
 import 'package:football_ticket/blocs/match/match_bloc.dart';
 import 'package:football_ticket/blocs/match/match_event.dart';
 import 'package:football_ticket/blocs/match/match_state.dart';
+import 'package:football_ticket/blocs/match_details/match_details_bloc.dart';
+import 'package:football_ticket/blocs/match_details/match_details_event.dart';
+import 'package:football_ticket/blocs/match_details/match_details_state.dart';
 import 'package:football_ticket/blocs/team/team_bloc.dart';
 import 'package:football_ticket/blocs/team/team_event.dart';
 import 'package:football_ticket/blocs/team/team_state.dart';
 import 'package:football_ticket/components/home/card_highlight.dart';
 import 'package:football_ticket/components/home/card_match.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/match_model.dart';
 import 'package:football_ticket/models/team_model.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 import 'package:football_ticket/screens/auth/changpassword_page.dart';
 import 'package:football_ticket/screens/details_match.dart';
+import 'package:football_ticket/widgets/show_loading_dialog.dart';
+import 'package:lottie/lottie.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -61,11 +67,15 @@ class _HomePageState extends State<HomePage> {
       } else {
         _currentPage = 0;
       }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: (Duration(milliseconds: 400)),
-        curve: Curves.easeInOut,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_pageController.hasClients) {
+          _pageController.animateToPage(
+            _currentPage,
+            duration: (Duration(milliseconds: 400)),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
     });
   }
 
@@ -82,6 +92,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         if (state is Logined) {
           final user = state.user;
+          print("Token: ${user.token}");
           if (user.name == null) {
             return Center(child: CircularProgressIndicator());
           }
@@ -127,213 +138,254 @@ class _HomePageState extends State<HomePage> {
                   context.read<MatchBloc>().add(LoadMatchEvent(null));
                 },
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 20),
-                        Text(
-                          "Highlight Match",
-                          style: AppTextStyles.title2.copyWith(
-                            color: AppColors.textMain,
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<MatchBloc>().add(LoadMatchEvent(null));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 5),
+                          Card(
+                            elevation: 5,
+                            color: AppColors.secondary,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 220,
+                              child: Lottie.asset("assets/home_page.json"),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 15),
-                        SizedBox(
-                          height: 215,
-                          child: PageView(
-                            controller: _pageController,
-                            scrollDirection: Axis.horizontal,
+
+                          // Text(
+                          //   "Highlight Match",
+                          //   style: AppTextStyles.title2.copyWith(
+                          //     color: AppColors.textMain,
+                          //   ),
+                          // ),
+                          // SizedBox(height: 15),
+                          // SizedBox(
+                          //   height: 215,
+                          //   child: PageView(
+                          //     controller: _pageController,
+                          //     scrollDirection: Axis.horizontal,
+                          //     children: [
+                          //       CardHighlight(),
+                          //       CardHighlight(),
+                          //       CardHighlight(),
+                          //       CardHighlight(),
+                          //       CardHighlight(),
+                          //     ],
+                          //   ),
+                          // ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Maches",
+                            style: AppTextStyles.title1.copyWith(
+                              color: AppColors.primary,
+                            ),
+                          ),
+
+                          SizedBox(height: 5),
+                          Row(
                             children: [
-                              CardHighlight(),
-                              CardHighlight(),
-                              CardHighlight(),
-                              CardHighlight(),
-                              CardHighlight(),
+                              // Container(
+                              //   width: 140,
+                              //   height: 40,
+                              //   decoration: BoxDecoration(
+                              //     color: AppColors.secondary,
+                              //     border: Border.all(
+                              //       color: AppColors.primary,
+                              //       width: 2,
+                              //     ),
+                              //     borderRadius: BorderRadius.circular(10.0),
+                              //   ),
+                              //   child: Center(
+                              //     child: DropdownButton<String>(
+                              //       value: dropdownValue,
+                              //       style: const TextStyle(
+                              //         color: AppColors.textMain,
+                              //         fontSize: 16,
+                              //         fontWeight: FontWeight.bold,
+                              //       ),
+                              //       onChanged: (String? value) {
+                              //         setState(() {
+                              //           dropdownValue = value!;
+                              //         });
+                              //       },
+                              //       elevation: 5,
+                              //       dropdownColor: AppColors.secondary,
+                              //       borderRadius: BorderRadius.circular(12),
+                              //       icon: SizedBox.shrink(),
+                              //       underline: SizedBox(),
+                              //       items:
+                              //           list.map<DropdownMenuItem<String>>((
+                              //             String value,
+                              //           ) {
+                              //             return DropdownMenuItem<String>(
+                              //               value: value,
+                              //               child: Text(value),
+                              //             );
+                              //           }).toList(),
+                              //     ),
+                              //   ),
+                              // ),
+                              // SizedBox(width: 25),
+                              BlocBuilder<TeamBloc, TeamState>(
+                                builder: (context, state) {
+                                  if (state is TeamLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else if (state is TeamLoaded) {
+                                    final teams = state.teamModel;
+
+                                    return Card(
+                                      color: AppColors.secondary_bg,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                        ),
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: AppColors.primary,
+                                            width: 2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            10.0,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: DropdownButton<TeamModel?>(
+                                            value: selectedTeam,
+                                            style: const TextStyle(
+                                              color: AppColors.textMain,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            onChanged: (TeamModel? value) {
+                                              setState(() {
+                                                selectedTeam = value;
+                                                isLoadMatch = true;
+
+                                                context.read<MatchBloc>().add(
+                                                  LoadMatchEvent(value?.teamId),
+                                                );
+                                              });
+                                            },
+                                            menuMaxHeight: 300,
+                                            icon: SizedBox.shrink(),
+                                            underline: SizedBox(),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            items: [
+                                              DropdownMenuItem<TeamModel?>(
+                                                value: null,
+                                                child: Text(
+                                                  "Teams",
+                                                  style: TextStyle(
+                                                    color: AppColors.textMain,
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              ...teams.map((team) {
+                                                return DropdownMenuItem<
+                                                  TeamModel
+                                                >(
+                                                  value: team,
+                                                  child: Text(team.teamName),
+                                                );
+                                              }).toList(),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else if (state is TeamLoadError) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("Lỗi:${state.message}"),
+                                      ),
+                                    );
+                                  }
+                                  return Container();
+                                },
+                              ),
                             ],
                           ),
-                        ),
 
-                        SizedBox(height: 25),
-                        Text(
-                          "Maches",
-                          style: AppTextStyles.title1.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
-
-                        SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Container(
-                              width: 140,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.secondary,
-                                border: Border.all(
-                                  color: AppColors.primary,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Center(
-                                child: DropdownButton<String>(
-                                  value: dropdownValue,
-                                  style: const TextStyle(
-                                    color: AppColors.textMain,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      dropdownValue = value!;
-                                    });
-                                  },
-                                  elevation: 5,
-                                  dropdownColor: AppColors.secondary,
-                                  borderRadius: BorderRadius.circular(12),
-                                  icon: SizedBox.shrink(),
-                                  underline: SizedBox(),
-                                  items:
-                                      list.map<DropdownMenuItem<String>>((
-                                        String value,
-                                      ) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 25),
-                            BlocBuilder<TeamBloc, TeamState>(
-                              builder: (context, state) {
-                                if (state is TeamLoading) {
-                                  return Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (state is TeamLoaded) {
-                                  final teams = state.teamModel;
-                                 
-
-                                  return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                    ),
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.primary,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Center(
-                                      child: DropdownButton<TeamModel?>(
-                                        value: selectedTeam,
-                                        style: const TextStyle(
-                                          color: AppColors.textMain,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        onChanged: (TeamModel? value) {
-                                          setState(() {
-                                            selectedTeam = value;
-                                            isLoadMatch = true;
-
-                                            context.read<MatchBloc>().add(
-                                              LoadMatchEvent(value?.teamId),
-                                            );
-                                          });
-                                        },
-                                        menuMaxHeight: 300,
-                                        icon: SizedBox.shrink(),
-                                        underline: SizedBox(),
-                                        borderRadius: BorderRadius.circular(12),
-                                        items: [
-                                          DropdownMenuItem<TeamModel?>(
-                                            value: null,
-                                            child: Text(
-                                              "Teams",
-                                              style: TextStyle(
-                                                color: AppColors.textMain,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                          SizedBox(height: 25),
+                          if (isLoadMatch || listMatch == null)
+                            Center(child: CircularProgressIndicator())
+                          else if (listMatch == null || listMatch!.isEmpty)
+                            Center(child: Text("Không có trận đấu nào"))
+                          else
+                            BlocListener<MatchDetailsBloc, MatchDetailsState>(
+                              listener: (context, state) {
+                                if (state is MatchDetailsLoading) {
+                                  showLoadingDialog(context);
+                                }
+                                if (state is MatchDetailsLoaded) {
+                                  if (Navigator.canPop(context))
+                                    Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => DetailsMatch(
+                                            detailsMatch: state.detailsMatch,
                                           ),
-                                          ...teams.map((team) {
-                                            return DropdownMenuItem<TeamModel>(
-                                              value: team,
-                                              child: Text(team.teamName),
-                                            );
-                                          }).toList(),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                } else if (state is TeamLoadError) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Lỗi:${state.message}"),
                                     ),
                                   );
                                 }
-                                return Container();
-                              },
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 25),
-                        if (isLoadMatch || listMatch == null)
-                          Center(child: CircularProgressIndicator())
-                        else if (listMatch == null || listMatch!.isEmpty)
-                          Center(child: Text("Không có trận đấu nào"))
-                        else
-                          ListView.builder(
-                            itemCount: listMatch!.length,
-
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemBuilder: (context, index) {
-                              print("--------------");
-                              print("match${listMatch![index]}");
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 15),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => DetailsMatch(
-                                              match: listMatch![index],
-                                            ),
+                                if (state is MatchDetailsError) {
+                                  if (Navigator.canPop(context))
+                                    Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "Lỗi khi lấy chi tiết trận đấu",
                                       ),
-                                    );
-                                  },
-                                  child: CardMatch(match: listMatch![index]),
-                                ),
-                              );
-                            },
-                          ),
+                                    ),
+                                  );
+                                }
+                              },
 
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => DetailsMatch(),
-                        //       ),
-                        //     );
-                        //   },
-                        //   child: CardMatch(),
-                        // ),
-                      ],
+                              child: ListView.builder(
+                                itemCount: listMatch!.length,
+
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  print("--------------");
+                                  print("match${listMatch![index]}");
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 15),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context.read<MatchDetailsBloc>().add(
+                                          LoadMatchDetailsEvent(
+                                            user.token!,
+                                            listMatch![index].matchId,
+                                          ),
+                                        );
+                                      },
+                                      child: CardMatch(
+                                        match: listMatch![index],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

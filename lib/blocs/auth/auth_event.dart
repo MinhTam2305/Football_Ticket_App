@@ -77,3 +77,12 @@ class ResetPassword extends AuthEvent {
   @override
   List<Object?> get props => [phoneNumber, newPassord];
 }
+
+class ChangePassword extends AuthEvent {
+  final String token;
+  final String currentPassword;
+  final String newPassword;
+  ChangePassword(this.token, this.currentPassword, this.newPassword);
+  @override
+  List<Object?> get props => [token, currentPassword, newPassword];
+}

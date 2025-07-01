@@ -2,11 +2,12 @@ class UserModel {
   final String? uid;
   final String? name;
   final String? phoneNumber;
+  final String? token;
   final String? role;
 
   // final String? token;
 
-  UserModel({this.uid, this.name, this.phoneNumber, this.role});
+  UserModel({this.uid, this.name, this.phoneNumber, this.token, this.role});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -21,6 +22,7 @@ class UserModel {
     'id': uid,
     'fullName': name,
     'phoneNumber': phoneNumber,
+    'token': token,
     'role': role,
   };
 }

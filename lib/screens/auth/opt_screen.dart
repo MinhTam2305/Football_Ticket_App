@@ -35,7 +35,9 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.background,
         centerTitle: true,
         title: Text("Xác thực OTP", style: AppTextStyles.title2),
       ),
@@ -57,6 +59,9 @@ class _OtpScreenState extends State<OtpScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
                   onPressed: () {
                     final code = codeController.text.trim();
 
@@ -92,7 +97,10 @@ class _OtpScreenState extends State<OtpScreen> {
                       );
                     }
                   },
-                  child: Text("Xác nhận"),
+                  child: Text(
+                    "Xác nhận",
+                    style: TextStyle(color: AppColors.white),
+                  ),
                 ),
                 SizedBox(width: 20),
                 ElevatedButton(
