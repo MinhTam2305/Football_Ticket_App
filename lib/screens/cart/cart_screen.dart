@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '/screens/cart/cart_successful_screen.dart';
+import '/blocs/booking/booking_bloc.dart';
+import '/blocs/booking/booking_event.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -8,7 +11,7 @@ class CartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackButton(),
         centerTitle: true,
         title: const Text(
           'Cart',
@@ -144,6 +147,14 @@ class CartScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  context.read<BookingBloc>().add(
+                    BookingRequested(
+                      matchId: '62d45aee-7e3c-4d83-8e23-61e361662255',
+                      userId: 'a80314a7-7150-4413-803e-4c91ce6d8513',
+                      quantity: 1,
+                      stand: 'A',
+                    ),
+                  );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
