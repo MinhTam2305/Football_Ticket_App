@@ -107,18 +107,18 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Hi ${user.name!}", style: AppTextStyles.title2),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CartScreen()),
-                        );
-                      },
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        color: AppColors.grey,
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(builder: (context) => CartScreen()),
+                    //     );
+                    //   },
+                    //   child: Icon(
+                    //     Icons.shopping_cart_outlined,
+                    //     color: AppColors.grey,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

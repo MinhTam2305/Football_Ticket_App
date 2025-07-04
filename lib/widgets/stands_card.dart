@@ -8,7 +8,12 @@ import 'package:intl/intl.dart';
 
 class StandsCard extends StatefulWidget {
   final List<StandModel> stands;
-  const StandsCard({super.key, required this.stands});
+  final Function(StandModel stand, double price, int quantity) onStandSelected;
+  const StandsCard({
+    super.key,
+    required this.stands,
+    required this.onStandSelected,
+  });
 
   @override
   State<StandsCard> createState() => _StandsCardState();
@@ -85,6 +90,11 @@ class _StandsCardState extends State<StandsCard> {
                                       unitPrice = stand.price;
                                       availableTickets = stand.availabelTickets;
                                     });
+                                    widget.onStandSelected(
+                                      stand,
+                                      price,
+                                      quantity,
+                                    );
                                   },
                                   child: CardStand(
                                     stand: stand.standName,
