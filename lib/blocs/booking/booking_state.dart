@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+part of 'booking_bloc.dart';
 
 abstract class BookingState extends Equatable {
   const BookingState();
@@ -16,7 +16,7 @@ class BookingSuccess extends BookingState {}
 class BookingFailure extends BookingState {
   final String error;
 
-  const BookingFailure(this.error);
+  const BookingFailure({required this.error});
 
   @override
   List<Object> get props => [error];
