@@ -73,7 +73,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                           Column(
                             children: [
                               Image.network(
-                                 widget.detailsMatch.match.awayTeam.logo,
+                                widget.detailsMatch.match.awayTeam.logo,
                                 width: 75,
                                 height: 60,
                               ),
