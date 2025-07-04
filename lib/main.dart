@@ -30,11 +30,6 @@ void main() async {
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
-        BlocProvider(
-          create: (_) => PaymentBloc(
-            paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
-          ),
-        ),
       ],
       child: const MyApp(),
     ),
