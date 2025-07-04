@@ -56,6 +56,7 @@ class _StandsCardState extends State<StandsCard> {
     ).format(totalPrice);
     print("Số khán đài: ${widget.stands.length}");
     return Card(
+      elevation: 5,
       color: AppColors.white,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -97,63 +98,73 @@ class _StandsCardState extends State<StandsCard> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Text(
-                          "Quantity:",
-                          style: AppTextStyles.body1.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        Container(
-                          width: 125,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              IconButton(
-                                onPressed: decre,
-                                icon: Icon(Icons.remove, size: 25),
-                                padding: EdgeInsets.zero,
-                              ),
                               Text(
-                                "$quantity",
-                                style: AppTextStyles.body2.copyWith(
+                                "Quantity:",
+                                style: AppTextStyles.body1.copyWith(
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              SizedBox(width: 5),
+                              Container(
+                                width: 125,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: AppColors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: decre,
+                                      icon: Icon(Icons.remove, size: 25),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    Text(
+                                      "$quantity",
+                                      style: AppTextStyles.body2.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
 
-                              IconButton(
-                                onPressed: add,
-                                icon: Icon(FontAwesomeIcons.plus, size: 15),
-                                padding: EdgeInsets.zero,
+                                    IconButton(
+                                      onPressed: add,
+                                      icon: Icon(
+                                        FontAwesomeIcons.plus,
+                                        size: 15,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Text(
-                            "Price:        ",
-                            style: AppTextStyles.body1.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            "$formattedPrice",
-                            style: AppTextStyles.body1.copyWith(
-                              color: AppColors.grey,
+                          SizedBox(height: 15),
+                          SizedBox(
+                            width: double.infinity,
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Price:        ",
+                                  style: AppTextStyles.body1.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  "$formattedPrice",
+                                  style: AppTextStyles.body1.copyWith(
+                                    color: AppColors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

@@ -29,19 +29,20 @@ class _ProfilePageState extends State<ProfilePage> {
             return Scaffold(
               backgroundColor: AppColors.background,
               body: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 150),
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 80),
                 child: Stack(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 80),
+                      padding: EdgeInsets.only(top: 120),
                       child: Lottie.asset("assets/Animation-Profile.json"),
                     ),
                     Column(
                       children: [
                         SizedBox(
                           width: double.infinity,
-                          height: 90,
+                          height: 120,
                           child: Card(
+                            elevation: 5,
                             color: AppColors.white,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 230),
+                        SizedBox(height: 250),
                         ButtonCustom(
                           text: "Edit Profile",
                           opTap: () {},
