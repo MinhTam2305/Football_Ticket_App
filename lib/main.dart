@@ -31,11 +31,6 @@ void main() async {
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
         BlocProvider(
-          create: (_) => BookingBloc(
-            BookingRepository(baseUrl: 'https://localhost:7023'),
-          ),
-        ),
-        BlocProvider(
           create: (_) => PaymentBloc(
             paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
           ),

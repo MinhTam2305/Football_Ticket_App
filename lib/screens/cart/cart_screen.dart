@@ -5,7 +5,6 @@ import 'package:football_ticket/blocs/booking/booking_event.dart';
 import 'package:football_ticket/blocs/booking/booking_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/ticket_detail_model.dart';
-import 'package:football_ticket/models/ticket_model.dart';
 
 class CartScreen extends StatelessWidget {
   final TicketModel ticket;
@@ -132,7 +131,8 @@ class CartScreen extends StatelessWidget {
               Navigator.pop(context);
             } else if (state is BookingFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Booking failed: ${state.message}")));
+                SnackBar(content: Text("Booking failed: ${state.message}")),
+              );
             }
           },
           builder: (context, state) {
