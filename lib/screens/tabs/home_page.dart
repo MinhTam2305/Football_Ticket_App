@@ -338,6 +338,7 @@ class _HomePageState extends State<HomePage> {
                                     MaterialPageRoute(
                                       builder:
                                           (context) => DetailsMatch(
+                                            user: user,
                                             detailsMatch: state.detailsMatch,
                                           ),
                                     ),

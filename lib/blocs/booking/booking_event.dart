@@ -6,9 +6,9 @@ abstract class BookingEvent extends Equatable {
 }
 
 class BookTicketEvent extends BookingEvent {
-  final int userId;
-  final int matchId;
-  final int standId;
+  final String userId;
+  final String matchId;
+  final String standId;
   final int quantity;
 
   BookTicketEvent({

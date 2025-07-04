@@ -26,31 +26,49 @@ class _StandsCardState extends State<StandsCard> {
   int selectedIndex = 0;
   int availableTickets = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.stands.isNotEmpty) {
-      price = widget.stands[0].price;
-      unitPrice = widget.stands[0].price;
-      availableTickets = widget.stands[0].availabelTickets;
-    }
-  }
-
-  void add() {
-    if (quantity < availableTickets) {
-      setState(() {
-        quantity++;
-      });
-    }
-  }
-
-  void decre() {
-    setState(() {
-      if (quantity > 1) {
-        quantity--;
-      }
+@override
+void initState() {
+  super.initState();
+  if (widget.stands.isNotEmpty) {
+    price = widget.stands[0].price;
+    unitPrice = widget.stands[0].price;
+    availableTickets = widget.stands[0].availabelTickets;
+    // Gọi callback lần đầu
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.onStandSelected(
+        widget.stands[0],
+        unitPrice * quantity,
+        quantity,
+      );
     });
   }
+}
+
+void add() {
+  if (quantity < availableTickets) {
+    setState(() {
+      quantity++;
+    });
+    widget.onStandSelected(
+      widget.stands[selectedIndex],
+      unitPrice * quantity,
+      quantity,
+    );
+  }
+}
+
+void decre() {
+  if (quantity > 1) {
+    setState(() {
+      quantity--;
+    });
+    widget.onStandSelected(
+      widget.stands[selectedIndex],
+     unitPrice * quantity,
+      quantity,
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

@@ -2,19 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
+import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 import 'package:football_ticket/widgets/stands_card.dart';
 
 class DetailsMatch extends StatefulWidget {
+  final UserModel user;
   final MatchDetailsModel detailsMatch;
-  const DetailsMatch({super.key, required this.detailsMatch});
+  const DetailsMatch({
+    super.key,
+    required this.user,
+    required this.detailsMatch,
+  });
 
   @override
   State<DetailsMatch> createState() => _DetailsMatchState();
 }
 
 class _DetailsMatchState extends State<DetailsMatch> {
-   StandModel? selectedStand;
+  StandModel? selectedStand;
   double? selectedPrice;
   int? selectedQuantity;
   @override
@@ -24,22 +30,23 @@ class _DetailsMatchState extends State<DetailsMatch> {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(width: 0),
-            Text("Match details", style: AppTextStyles.title2),
-            // GestureDetector(
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (context) => CartScreen()),
-            //     );
-            //   },
-            //   child: Icon(Icons.shopping_cart_outlined),
-            // ),
-          ],
-        ),
+        title: Text("Match details", style: AppTextStyles.title2),
+        // title: Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     SizedBox(width: 0),
+        //     Text("Match details", style: AppTextStyles.title2),
+        //     // GestureDetector(
+        //     //   onTap: () {
+        //     //     Navigator.push(
+        //     //       context,
+        //     //       MaterialPageRoute(builder: (context) => CartScreen()),
+        //     //     );
+        //     //   },
+        //     //   child: Icon(Icons.shopping_cart_outlined),
+        //     // ),
+        //   ],
+        // ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -152,15 +159,15 @@ class _DetailsMatchState extends State<DetailsMatch> {
               ),
               SizedBox(height: 20),
               StandsCard(
-      stands: widget.detailsMatch.stand,
-      onStandSelected: (stand, price, quantity) {
-        setState(() {
-          selectedStand = stand;
-          selectedPrice = price;
-          selectedQuantity = quantity;
-        });
-      },
-    ),
+                stands: widget.detailsMatch.stand,
+                onStandSelected: (stand, price, quantity) {
+                  setState(() {
+                    selectedStand = stand;
+                    selectedPrice = price;
+                    selectedQuantity = quantity;
+                  });
+                },
+              ),
 
               SizedBox(height: 10),
             ],
@@ -173,7 +180,16 @@ class _DetailsMatchState extends State<DetailsMatch> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CartScreen(detailsMatch,selectedStand, selectedPrice, selectedQuantity)),
+              MaterialPageRoute(
+                builder:
+                    (context) => CartScreen(
+                      detailsMatch: widget.detailsMatch,
+                      user: widget.user,
+                      stand: selectedStand!,
+                      totlePrice: selectedPrice ?? 0.0,
+                      quantity: selectedQuantity ?? 1,
+                    ),
+              ),
             );
           },
           child: Container(

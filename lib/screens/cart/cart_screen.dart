@@ -4,20 +4,27 @@ import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_event.dart';
 import 'package:football_ticket/blocs/booking/booking_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/models/match_details_model.dart';
+import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/ticket_detail_model.dart';
+import 'package:football_ticket/models/user_model.dart';
 
 class CartScreen extends StatelessWidget {
-  final TicketModel ticket;
-  final int userId;
-  final int matchId;
-  final int standId;
+  final MatchDetailsModel detailsMatch;
+   final UserModel user;
+   final StandModel stand;
+  final double totlePrice;
+ final int quantity;
+  
 
   const CartScreen({
     super.key,
-    required this.ticket,
-    required this.userId,
-    required this.matchId,
-    required this.standId,
+    required this.detailsMatch,
+    required this.user,
+    required this.stand,
+    required this.totlePrice,
+    required this.quantity,
+
   });
 
   @override
@@ -49,17 +56,17 @@ class CartScreen extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            Image.network(ticket.homeTeamLogo, width: 60, height: 40),
+                            Image.network(detailsMatch.match.homeTeam.logo, width: 60, height: 40),
                             const SizedBox(height: 5),
-                            Text(ticket.homeTeamName, style: AppTextStyles.body1),
+                            Text(detailsMatch.match.homeTeam.teamName, style: AppTextStyles.body1),
                           ],
                         ),
                         Text("VS", style: AppTextStyles.title1),
                         Column(
                           children: [
-                            Image.network(ticket.awayTeamLogo, width: 60, height: 40),
+                            Image.network(detailsMatch.match.awayTeam.logo, width: 60, height: 40),
                             const SizedBox(height: 5),
-                            Text(ticket.awayTeamName, style: AppTextStyles.body1),
+                            Text(detailsMatch.match.awayTeam.teamName, style: AppTextStyles.body1),
                           ],
                         ),
                       ],
@@ -69,7 +76,7 @@ class CartScreen extends StatelessWidget {
                       children: [
                         const Icon(Icons.date_range_outlined, size: 20, color: AppColors.grey),
                         const SizedBox(width: 8),
-                        Text(ticket.matchDateTime, style: AppTextStyles.body2),
+                        Text(detailsMatch.match.matchTime, style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -77,19 +84,19 @@ class CartScreen extends StatelessWidget {
                       children: [
                         const Icon(Icons.location_on_outlined, size: 20, color: AppColors.grey),
                         const SizedBox(width: 8),
-                        Text(ticket.stadium, style: AppTextStyles.body2),
+                        Text("Go Dau", style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Text("Stand: ${ticket.standName}", style: AppTextStyles.body2),
+                        Text("Stand: ${stand.standName}", style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text("Remaining Tickets: ${ticket.remainingTickets}", style: AppTextStyles.body2),
+                        Text("Remaining Tickets: ${stand.availabelTickets}", style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -106,7 +113,7 @@ class CartScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Quantity:", style: AppTextStyles.body1),
-                Text("${ticket.quantity}", style: AppTextStyles.body1),
+                Text("${quantity}", style: AppTextStyles.body1),
               ],
             ),
             const SizedBox(height: 10),
@@ -114,7 +121,7 @@ class CartScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Price:", style: AppTextStyles.body1),
-                Text("${ticket.price.toStringAsFixed(0)}đ", style: AppTextStyles.body1),
+                Text("${totlePrice.toStringAsFixed(0)}đ", style: AppTextStyles.body1),
               ],
             ),
           ],
@@ -149,10 +156,10 @@ class CartScreen extends StatelessWidget {
                   : () {
                 context.read<BookingBloc>().add(
                   BookTicketEvent(
-                    userId: userId,
-                    matchId: matchId,
-                    standId: standId,
-                    quantity: ticket.quantity,
+                    userId: user.uid!,
+                    matchId: detailsMatch.idMatch,
+                    standId: stand.standId,
+                    quantity: quantity,
                   ),
                 );
               },

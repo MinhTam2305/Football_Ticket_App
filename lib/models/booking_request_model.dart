@@ -1,7 +1,7 @@
 class BookingRequestModel {
-  final int userId;
-  final int matchId;
-  final int standId;
+  final String userId;
+  final String matchId;
+  final String standId;
 
   BookingRequestModel({
     required this.userId,
