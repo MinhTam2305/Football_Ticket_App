@@ -134,7 +134,7 @@ class _TicketScreenState extends State<TicketScreen> {
         child: Row(
           children: [
             QrImageView(
-              data: ticket.matchName + ticket.dateTime,
+              data: ticket.idTicket,
               version: QrVersions.auto,
               size: 80.0,
             ),

@@ -42,17 +42,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = <Widget>[
-      isUser ? HomePage() : HomeStaff(),
+      isUser ? HomePage() : HomeStaff(user: widget.user),
       isUser ? TicketScreen() : ManualCheckTicketScreen(),
       isUser ? ProfilePage() : ProfilePage(),
     ];
     return Scaffold(
-      body: IndexedStack(
-        index: _currentPageIndex,
-        children: _widgetOption,
-      ),
+      body: IndexedStack(index: _currentPageIndex, children: _widgetOption),
       bottomNavigationBar: BottomNavigationBar(
-        items: const[
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             label: "Home",

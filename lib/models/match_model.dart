@@ -26,9 +26,8 @@ class MatchModel {
       awayTeam: TeamModel.fromJson(json['awayTeam']),
     );
   }
-  String get matchDate =>
-      DateFormat('dd/MM').format(matchDateTime.toLocal());
-           String get matchDateMY =>
+  String get matchDate => DateFormat('dd/MM').format(matchDateTime.toLocal());
+  String get matchDateMY =>
       DateFormat('dd/MM/yyyy').format(matchDateTime.toLocal());
 
   String get matchTime => DateFormat('HH:mm').format(matchDateTime.toLocal());
