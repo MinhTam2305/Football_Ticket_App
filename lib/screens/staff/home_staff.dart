@@ -150,18 +150,42 @@ class _HomeStaffState extends State<HomeStaff> {
             padding: EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   Icons.check_circle_outline,
-                  size: 50,
+                  size: 100,
                   color: AppColors.success,
                 ),
                 SizedBox(height: 10),
-                Text(booking.matchName),
-                Text("Time: ${booking.matchTime}"),
-                Text("Status: ${booking.status}"),
+                Text(
+                  
+                  textAlign: TextAlign.center,
+                  booking.matchName,style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400)),
+                Text("Time: ${booking.matchTime}",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400),),
+                // Text("Status: ${booking.status}"),
+                 Text("Status: Vào sân",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400),),
                 SizedBox(height: 20),
-                TextButton(
+                // TextButton(
+                //   style: TextButton.styleFrom(
+                //     backgroundColor: AppColors.primary,
+                //   ),
+                //   onPressed: () async {
+                //     Navigator.of(context).pop();
+                //     setState(() {
+                      
+                //       isDialogOpen = false;
+                //       result = null;
+                //     });
+                //     await controller?.resumeCamera();
+                //   },
+                //   child: Text(
+                //     "Show Details",
+                //     style: TextStyle(color: AppColors.white),
+                //   ),
+                // ),
+                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: AppColors.primary,
                   ),
@@ -174,9 +198,12 @@ class _HomeStaffState extends State<HomeStaff> {
                     });
                     await controller?.resumeCamera();
                   },
-                  child: Text(
-                    "Show Details",
-                    style: TextStyle(color: AppColors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Đóng",
+                      style: TextStyle(color: AppColors.white),
+                    ),
                   ),
                 ),
               ],
