@@ -11,6 +11,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
 
       List<Ticket> tickets = [
         Ticket(
+          idTicket: '40442892-6d73-461b-9bd2-4b2c483054d0',
           matchName: "Viet Nam vs Malaysia",
           dateTime: "CN, 8 Th6, 2025 - 8:00",
           quantity: 1,
@@ -20,6 +21,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
           stand: "A",
         ),
         Ticket(
+           idTicket: '829b9686-ef90-4f6b-bf53-366f1a54edf4',
           matchName: "Viet Nam vs Brazil",
           dateTime: "CN, 22 Th6, 2025 - 17:00",
           quantity: 1,
@@ -29,6 +31,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
           stand: "A",
         ),
         Ticket(
+           idTicket: '201b0425-7ed3-4ce5-a3d4-6b06567d7f25',
           matchName: "Viet Nam vs Indonesia",
           dateTime: "Th5, 26 Th6, 2025 - 18:00",
           quantity: 2,
@@ -38,6 +41,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
           stand: "A",
         ),
         Ticket(
+          idTicket: '40442892-6d73-461b-9bd2-4b2c483054d0',
           matchName: "Viet Nam vs India",
           dateTime: "Th7, 3 Th5, 2025 - 18:00",
           quantity: 1,
@@ -47,6 +51,7 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
           stand: "A",
         ),
         Ticket(
+           idTicket: '829b9686-ef90-4f6b-bf53-366f1a54edf4',
           matchName: "Viet Nam vs Singapore",
           dateTime: "CN, 11 Th5, 2025 - 18:00",
           quantity: 2,

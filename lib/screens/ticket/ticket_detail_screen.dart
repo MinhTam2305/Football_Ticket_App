@@ -42,7 +42,7 @@ class TicketDetailScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: QrImageView(
-                data: ticket.matchName + ticket.dateTime,
+                data: ticket.idTicket,
                 version: QrVersions.auto,
                 size: 220.0,
               ),
