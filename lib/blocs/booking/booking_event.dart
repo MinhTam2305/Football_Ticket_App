@@ -1,25 +1,23 @@
-part of 'booking_bloc.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class BookingEvent extends Equatable {
-  const BookingEvent();
-
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class BookingRequested extends BookingEvent {
-  final String userId;
-  final String matchId;
+class BookTicketEvent extends BookingEvent {
+  final int userId;
+  final int matchId;
+  final int standId;
   final int quantity;
-  final String stand;
 
-  const BookingRequested({
+  BookTicketEvent({
     required this.userId,
     required this.matchId,
+    required this.standId,
     required this.quantity,
-    required this.stand,
   });
 
   @override
-  List<Object> get props => [userId, matchId, quantity, stand];
+  List<Object?> get props => [userId, matchId, standId, quantity];
 }

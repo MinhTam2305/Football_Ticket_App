@@ -1,120 +1,166 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import '/screens/cart/cart_successful_screen.dart';
-import '/blocs/payment/payment_bloc.dart';
-import '/blocs/payment/payment_event.dart';
-import '/blocs/payment/payment_state.dart';
-import '/blocs/booking/booking_bloc.dart';
+import 'package:football_ticket/blocs/booking/booking_bloc.dart';
+import 'package:football_ticket/blocs/booking/booking_event.dart';
+import 'package:football_ticket/blocs/booking/booking_state.dart';
+import 'package:football_ticket/core/constants/colors.dart';
+import 'package:football_ticket/models/ticket_detail_model.dart';
+import 'package:football_ticket/models/ticket_model.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  final TicketModel ticket;
+  final int userId;
+  final int matchId;
+  final int standId;
+
+  const CartScreen({
+    super.key,
+    required this.ticket,
+    required this.userId,
+    required this.matchId,
+    required this.standId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<BookingBloc, BookingState>(
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: BackButton(color: AppColors.textMain),
+        title: Text("Cart", style: AppTextStyles.title2),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide(color: AppColors.primary),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Image.network(ticket.homeTeamLogo, width: 60, height: 40),
+                            const SizedBox(height: 5),
+                            Text(ticket.homeTeamName, style: AppTextStyles.body1),
+                          ],
+                        ),
+                        Text("VS", style: AppTextStyles.title1),
+                        Column(
+                          children: [
+                            Image.network(ticket.awayTeamLogo, width: 60, height: 40),
+                            const SizedBox(height: 5),
+                            Text(ticket.awayTeamName, style: AppTextStyles.body1),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        const Icon(Icons.date_range_outlined, size: 20, color: AppColors.grey),
+                        const SizedBox(width: 8),
+                        Text(ticket.matchDateTime, style: AppTextStyles.body2),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_outlined, size: 20, color: AppColors.grey),
+                        const SizedBox(width: 8),
+                        Text(ticket.stadium, style: AppTextStyles.body2),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Text("Stand: ${ticket.standName}", style: AppTextStyles.body2),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Text("Remaining Tickets: ${ticket.remainingTickets}", style: AppTextStyles.body2),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/images/stadium.png", height: 130, fit: BoxFit.cover),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Quantity:", style: AppTextStyles.body1),
+                Text("${ticket.quantity}", style: AppTextStyles.body1),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Price:", style: AppTextStyles.body1),
+                Text("${ticket.price.toStringAsFixed(0)}đ", style: AppTextStyles.body1),
+              ],
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: BlocConsumer<BookingBloc, BookingState>(
           listener: (context, state) {
             if (state is BookingSuccess) {
-              // Sau khi đặt vé thành công → gọi thanh toán
-              context.read<PaymentBloc>().add(
-                PaymentRequested(
-                  userId: 'a80314a7-7150-4413-803e-4c91ce6d8513',
-                  amount: 500000,
-                  description: 'Thanh toán vé Việt Nam vs Malaysia',
-                ),
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Booking successful!")),
               );
+              Navigator.pop(context);
             } else if (state is BookingFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Đặt vé thất bại: ${state.error}')),
-              );
+                  SnackBar(content: Text("Booking failed: ${state.message}")));
             }
           },
-        ),
-        BlocListener<PaymentBloc, PaymentState>(
-          listener: (context, state) async {
-            if (state is PaymentSuccess) {
-              final Uri paymentUri = Uri.parse(state.paymentUrl);
-              if (await canLaunchUrl(paymentUri)) {
-                await launchUrl(paymentUri, mode: LaunchMode.externalApplication);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Không thể mở link thanh toán')),
-                );
-              }
-            } else if (state is PaymentFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Thanh toán thất bại: ${state.error}')),
-              );
-            }
-          },
-        ),
-      ],
-      child: Scaffold(
-        appBar: AppBar(
-          leading: const BackButton(),
-          centerTitle: true,
-          title: const Text(
-            'Cart',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // [Giao diện hiển thị trận đấu y như bạn đã có]
-              // ...
-
-              const SizedBox(height: 16),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Quantity:', style: TextStyle(fontSize: 16)),
-                  Text('1', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const SizedBox(height: 8),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Price:', style: TextStyle(fontSize: 16)),
-                  Text('500.000đ',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ],
-              ),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    // Gọi đặt vé trước
-                    context.read<BookingBloc>().add(
-                      const BookingRequested(
-                        userId: 'a80314a7-7150-4413-803e-4c91ce6d8513',
-                        matchId: '62d45aee-7e3c-4d83-8e23-61e361662255',
-                        quantity: 1,
-                        stand: 'A',
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Thanh Toán',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
+          builder: (context, state) {
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ],
-          ),
+              onPressed: state is BookingLoading
+                  ? null
+                  : () {
+                context.read<BookingBloc>().add(
+                  BookTicketEvent(
+                    userId: userId,
+                    matchId: matchId,
+                    standId: standId,
+                    quantity: ticket.quantity,
+                  ),
+                );
+              },
+              child: state is BookingLoading
+                  ? const CircularProgressIndicator(color: Colors.white)
+                  : Text("Payment", style: AppTextStyles.button.copyWith(color: Colors.white)),
+            );
+          },
         ),
       ),
     );

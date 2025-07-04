@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/match_details_model.dart';
+import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 import 'package:football_ticket/widgets/stands_card.dart';
 
@@ -13,6 +14,9 @@ class DetailsMatch extends StatefulWidget {
 }
 
 class _DetailsMatchState extends State<DetailsMatch> {
+   StandModel? selectedStand;
+  double? selectedPrice;
+  int? selectedQuantity;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,15 +29,15 @@ class _DetailsMatchState extends State<DetailsMatch> {
           children: [
             SizedBox(width: 0),
             Text("Match details", style: AppTextStyles.title2),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CartScreen()),
-                );
-              },
-              child: Icon(Icons.shopping_cart_outlined),
-            ),
+            // GestureDetector(
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => CartScreen()),
+            //     );
+            //   },
+            //   child: Icon(Icons.shopping_cart_outlined),
+            // ),
           ],
         ),
       ),
@@ -73,7 +77,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
                           Column(
                             children: [
                               Image.network(
-                                 widget.detailsMatch.match.awayTeam.logo,
+                                widget.detailsMatch.match.awayTeam.logo,
                                 width: 75,
                                 height: 60,
                               ),
@@ -147,7 +151,16 @@ class _DetailsMatchState extends State<DetailsMatch> {
                 ),
               ),
               SizedBox(height: 20),
-              StandsCard(stands: widget.detailsMatch.stand),
+              StandsCard(
+      stands: widget.detailsMatch.stand,
+      onStandSelected: (stand, price, quantity) {
+        setState(() {
+          selectedStand = stand;
+          selectedPrice = price;
+          selectedQuantity = quantity;
+        });
+      },
+    ),
 
               SizedBox(height: 10),
             ],
@@ -160,7 +173,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => CartScreen()),
+              MaterialPageRoute(builder: (context) => CartScreen(detailsMatch,selectedStand, selectedPrice, selectedQuantity)),
             );
           },
           child: Container(
