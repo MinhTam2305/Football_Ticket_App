@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+part of 'booking_bloc.dart';
 
 abstract class BookingEvent extends Equatable {
   const BookingEvent();
