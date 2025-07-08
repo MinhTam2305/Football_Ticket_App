@@ -36,6 +36,11 @@ void main() async {
           create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
         ),
          BlocProvider(
+           create: (_) => BookingBloc(
+             bookingRepository: BookingRepository(),
+           ),
+         ),
+         BlocProvider(
           create: (_) => PaymentBloc(
             paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
           ),
