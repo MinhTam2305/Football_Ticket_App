@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:app_links/app_links.dart';
 import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_event.dart';
 import 'package:football_ticket/screens/cart/cart_successful_screen.dart';
@@ -37,7 +37,8 @@ class _PaymentResultHandlerState extends State<PaymentResultHandler> {
   }
 
   void _handleDeepLink() {
-    _sub = uriLinkStream.listen((Uri? uri) {
+    final appLinks = AppLinks();
+    _sub = appLinks.uriLinkStream.listen((Uri? uri) {
       if (uri == null) return;
 
       final result = uri.queryParameters['result'];
