@@ -1,13 +1,25 @@
-abstract class PaymentEvent {}
+import 'package:equatable/equatable.dart';
 
-class PaymentRequested extends PaymentEvent {
-  final String userId;
-  final int amount;
-  final String description;
+abstract class PaymentEvent extends Equatable {
+  const PaymentEvent();
 
-  PaymentRequested({
-    required this.userId,
+  @override
+  List<Object?> get props => [];
+}
+
+class CreatePaymentEvent extends PaymentEvent {
+  final String orderId;
+  final String orderInfo;
+  final double amount;
+  final String returnUrl;
+
+  const CreatePaymentEvent({
+    required this.orderId,
+    required this.orderInfo,
     required this.amount,
-    required this.description,
+    required this.returnUrl,
   });
+
+  @override
+  List<Object> get props => [orderId, orderInfo, amount, returnUrl];
 }

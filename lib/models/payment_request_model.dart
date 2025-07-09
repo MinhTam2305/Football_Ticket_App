@@ -1,17 +1,22 @@
 class PaymentRequestModel {
-  final String userId;
-  final int amount;
-  final String description;
+  final String orderId;
+  final String orderInfo;
+  final double amount;
+  final String returnUrl;
 
   PaymentRequestModel({
-    required this.userId,
+    required this.orderId,
+    required this.orderInfo,
     required this.amount,
-    required this.description,
+    required this.returnUrl,
   });
 
-  Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'amount': amount,
-    'description': description,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'orderId': orderId,
+      'orderInfo': orderInfo,
+      'amount': amount,
+      'returnUrl': returnUrl,
+    };
+  }
 }
