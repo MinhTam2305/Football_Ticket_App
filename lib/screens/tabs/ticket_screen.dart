@@ -4,8 +4,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '/blocs/ticket/ticket_bloc.dart';
 import '/blocs/ticket/ticket_event.dart';
 import '/blocs/ticket/ticket_state.dart';
+import '/models/booking_ticket_model.dart';
 import '/models/ticket_model.dart';
-import '/screens/ticket/ticket_detail_screen.dart';
 import '/core/constants/colors.dart';
 
 class TicketScreen extends StatefulWidget {
@@ -21,7 +21,12 @@ class _TicketScreenState extends State<TicketScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<TicketBloc>().add(LoadTickets());
+    context.read<TicketBloc>().add(
+      FetchMyTickets(
+        userId: 'da24b181-792a-485c-ad80-f010aa8a3bb3', // 👈 thay bằng SharedPreferences nếu có
+        token: 'YOUR_TOKEN_HERE',
+      ),
+    );
   }
 
   @override
@@ -32,8 +37,8 @@ class _TicketScreenState extends State<TicketScreen> {
         centerTitle: true,
         title: const Text('Ticket'),
         backgroundColor: AppColors.background,
-        titleTextStyle: new TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textMain),
-
+        titleTextStyle: const TextStyle(
+            fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textMain),
       ),
       body: Column(
         children: [
@@ -43,22 +48,37 @@ class _TicketScreenState extends State<TicketScreen> {
           Expanded(
             child: BlocBuilder<TicketBloc, TicketState>(
               builder: (context, state) {
-                if (state is TicketLoaded) {
-                  List<Ticket> tickets = state.tickets;
+                if (state is TicketLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is TicketLoaded) {
+                  final List<BookingTicket> bookingList =
+                  selectedIndex == 0 ? state.unused : state.used;
 
-                  List<Ticket> filteredTickets = tickets.where((ticket) {
-                    return selectedIndex == 0 ? !ticket.isUsed : ticket.isUsed;
-                  }).toList();
+                  final ticketItems = bookingList
+                      .expand((booking) => booking.tickets.map((ticket) => {
+                    "booking": booking,
+                    "ticket": ticket,
+                  }))
+                      .toList();
+
+                  if (ticketItems.isEmpty) {
+                    return const Center(child: Text("Không có vé nào."));
+                  }
 
                   return ListView.builder(
-                    itemCount: filteredTickets.length,
+                    itemCount: ticketItems.length,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
-                      return _buildTicketItem(filteredTickets[index]);
+                      final booking = ticketItems[index]["booking"] as BookingTicket;
+                      final ticket = ticketItems[index]["ticket"] as TicketModel;
+
+                      return _buildTicketItem(ticket, booking);
                     },
                   );
+                } else if (state is TicketError) {
+                  return Center(child: Text('Lỗi: ${state.message}'));
                 } else {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: Text("Không có dữ liệu."));
                 }
               },
             ),
@@ -74,7 +94,7 @@ class _TicketScreenState extends State<TicketScreen> {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary), // ✅
+        border: Border.all(color: AppColors.primary),
       ),
       child: Row(
         children: [
@@ -104,7 +124,7 @@ class _TicketScreenState extends State<TicketScreen> {
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? AppColors.textMain : AppColors.textMain,
+              color: AppColors.textMain,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -113,54 +133,59 @@ class _TicketScreenState extends State<TicketScreen> {
     );
   }
 
-  Widget _buildTicketItem(Ticket ticket) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TicketDetailScreen(ticket: ticket),
+  Widget _buildTicketItem(TicketModel ticket, BookingTicket booking) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        border: Border.all(color: AppColors.primary),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          QrImageView(
+            data: ticket.qrCode,
+            version: QrVersions.auto,
+            size: 80.0,
           ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.white, // ✅ nền item
-          border: Border.all(color: AppColors.primary),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            QrImageView(
-              data: ticket.idTicket,
-              version: QrVersions.auto,
-              size: 80.0,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    ticket.matchName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppColors.textMain,
-                    ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  booking.matchName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.textMain,
                   ),
-                  const SizedBox(height: 4),
-                  Text(ticket.dateTime, style: const TextStyle(color: AppColors.textSub)),
-                  const SizedBox(height: 4),
-                  Text('Số lượng vé: ${ticket.quantity}', style: const TextStyle(color: AppColors.textSub)),
-                ],
-              ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  _formatDateTime(booking.matchDateTime),
+                  style: const TextStyle(color: AppColors.textSub),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Khán đài: ${ticket.standName}',
+                  style: const TextStyle(color: AppColors.textSub),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Giá vé: ${ticket.price} đ',
+                  style: const TextStyle(color: AppColors.textSub),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  String _formatDateTime(DateTime dt) {
+    return "${dt.day}/${dt.month}/${dt.year} - ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}";
   }
 }
