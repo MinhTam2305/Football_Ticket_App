@@ -45,6 +45,10 @@ dependencies:
   url_launcher: ^6.3.1
   intl: ^0.20.2
   lottie: ^3.3.1
+<<<<<<< HEAD
+=======
+  app_links: ^6.4.0
+>>>>>>> 7e934a2758adf64294dc24ea11ce0dc981769d2b
 
 
 

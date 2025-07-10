@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import 'dart:async';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,18 @@
 // import 'package:football_ticket/models/match_details_model.dart';
 // import 'package:football_ticket/models/user_model.dart';
 // import 'package:football_ticket/models/stand_model.dart';
+=======
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:app_links/app_links.dart';
+import 'package:football_ticket/blocs/booking/booking_bloc.dart';
+import 'package:football_ticket/blocs/booking/booking_event.dart';
+import 'package:football_ticket/screens/cart/cart_successful_screen.dart';
+import 'package:football_ticket/models/match_details_model.dart';
+import 'package:football_ticket/models/user_model.dart';
+import 'package:football_ticket/models/stand_model.dart';
+>>>>>>> 7e934a2758adf64294dc24ea11ce0dc981769d2b
 
 // class PaymentResultHandler extends StatefulWidget {
 //   final MatchDetailsModel detailsMatch;
@@ -36,9 +49,16 @@
 //     _handleDeepLink();
 //   }
 
+<<<<<<< HEAD
 //   void _handleDeepLink() {
 //     _sub = uriLinkStream.listen((Uri? uri) {
 //       if (uri == null) return;
+=======
+  void _handleDeepLink() {
+    final appLinks = AppLinks();
+    _sub = appLinks.uriLinkStream.listen((Uri? uri) {
+      if (uri == null) return;
+>>>>>>> 7e934a2758adf64294dc24ea11ce0dc981769d2b
 
 //       final result = uri.queryParameters['result'];
 //       debugPrint('💰 Received payment result: $result');
