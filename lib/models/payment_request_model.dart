@@ -1,7 +1,7 @@
 class PaymentRequestModel {
   final String orderId;
   final String orderInfo;
-  final int amount;
+  final String amount;
   final String returnUrl;
 
   PaymentRequestModel({

@@ -10,7 +10,7 @@ abstract class PaymentEvent extends Equatable {
 class CreatePaymentEvent extends PaymentEvent {
   final String orderId;
   final String orderInfo;
-  final double amount;
+  final String amount;
   final String returnUrl;
 
   const CreatePaymentEvent({

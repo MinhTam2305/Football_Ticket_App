@@ -20,7 +20,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       final request = PaymentRequestModel(
         orderId: event.orderId,
         orderInfo: event.orderInfo,
-        amount: event.amount.toInt(),
+        amount: event.amount.toString(),
         returnUrl: event.returnUrl,
       );
 

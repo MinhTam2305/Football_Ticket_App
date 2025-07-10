@@ -1,24 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_event.dart';
 import 'package:football_ticket/blocs/booking/booking_state.dart';
+import 'package:football_ticket/blocs/payment/payment_bloc.dart';
+import 'package:football_ticket/blocs/payment/payment_event.dart';
+import 'package:football_ticket/blocs/payment/payment_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/ticket_detail_model.dart';
 import 'package:football_ticket/models/user_model.dart';
-<<<<<<< HEAD
-// import 'package:uni_links/uni_links.dart';
-=======
-import 'package:football_ticket/blocs/payment/payment_bloc.dart';
-import 'package:football_ticket/blocs/payment/payment_event.dart';
-import 'package:football_ticket/blocs/payment/payment_state.dart';
->>>>>>> 7e934a2758adf64294dc24ea11ce0dc981769d2b
 import 'package:url_launcher/url_launcher.dart';
 import 'package:football_ticket/screens/payment/payment_result_handler.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   final MatchDetailsModel detailsMatch;
   final UserModel user;
   final StandModel stand;
@@ -35,7 +33,6 @@ class CartScreen extends StatelessWidget {
   });
 
   @override
-<<<<<<< HEAD
   State<CartScreen> createState() => _CartScreenState();
 }
 
@@ -78,15 +75,13 @@ class _CartScreenState extends State<CartScreen> {
       CreatePaymentEvent(
         orderId: 'ORDER123',
         orderInfo: 'Buy ${widget.quantity} ticket(s)',
-        amount: widget.totlePrice.toDouble(),
+        amount: widget.totlePrice.toStringAsFixed(0),
         returnUrl: 'myapp://payment-result',
       ),
     );
   }
 
   @override
-=======
->>>>>>> 7e934a2758adf64294dc24ea11ce0dc981769d2b
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -115,17 +110,17 @@ class _CartScreenState extends State<CartScreen> {
                       children: [
                         Column(
                           children: [
-                            Image.network(detailsMatch.match.homeTeam.logo, width: 60, height: 40),
+                            Image.network(widget.detailsMatch.match.homeTeam.logo, width: 60, height: 40),
                             const SizedBox(height: 5),
-                            Text(detailsMatch.match.homeTeam.teamName, style: AppTextStyles.body1),
+                            Text(widget.detailsMatch.match.homeTeam.teamName, style: AppTextStyles.body1),
                           ],
                         ),
                         Text("VS", style: AppTextStyles.title1),
                         Column(
                           children: [
-                            Image.network(detailsMatch.match.awayTeam.logo, width: 60, height: 40),
+                            Image.network(widget.detailsMatch.match.awayTeam.logo, width: 60, height: 40),
                             const SizedBox(height: 5),
-                            Text(detailsMatch.match.awayTeam.teamName, style: AppTextStyles.body1),
+                            Text(widget.detailsMatch.match.awayTeam.teamName, style: AppTextStyles.body1),
                           ],
                         ),
                       ],
@@ -135,7 +130,7 @@ class _CartScreenState extends State<CartScreen> {
                       children: [
                         const Icon(Icons.date_range_outlined, size: 20, color: AppColors.grey),
                         const SizedBox(width: 8),
-                        Text(detailsMatch.match.matchTime, style: AppTextStyles.body2),
+                        Text(widget.detailsMatch.match.matchTime, style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 6),
@@ -149,13 +144,13 @@ class _CartScreenState extends State<CartScreen> {
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        Text("Stand: ${stand.standName}", style: AppTextStyles.body2),
+                        Text("Stand: ${widget.stand.standName}", style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Text("Remaining Tickets: ${stand.availabelTickets}", style: AppTextStyles.body2),
+                        Text("Remaining Tickets: ${widget.stand.availabelTickets}", style: AppTextStyles.body2),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -172,7 +167,7 @@ class _CartScreenState extends State<CartScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Quantity:", style: AppTextStyles.body1),
-                Text("${quantity}", style: AppTextStyles.body1),
+                Text("${widget.quantity}", style: AppTextStyles.body1),
               ],
             ),
             const SizedBox(height: 10),
@@ -180,7 +175,7 @@ class _CartScreenState extends State<CartScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Price:", style: AppTextStyles.body1),
-                Text("${totlePrice.toStringAsFixed(0)}đ", style: AppTextStyles.body1),
+                Text("${widget.totlePrice.toStringAsFixed(0)}đ", style: AppTextStyles.body1),
               ],
             ),
           ],
@@ -203,10 +198,10 @@ class _CartScreenState extends State<CartScreen> {
                   MaterialPageRoute(
                     builder: (_) =>
                         PaymentResultHandler(
-                          detailsMatch: detailsMatch,
-                          stand: stand,
-                          quantity: quantity,
-                          user: user,
+                          detailsMatch: widget.detailsMatch,
+                          stand: widget.stand,
+                          quantity: widget.quantity,
+                          user: widget.user,
                         ),
                   ),
                 );
@@ -231,9 +226,9 @@ class _CartScreenState extends State<CartScreen> {
                   : () {
                 context.read<PaymentBloc>().add(
                   CreatePaymentEvent(
-                    orderId: 'ORDER_${DateTime.now().millisecondsSinceEpoch}', // Hoặc mã đơn hàng của bạn
-                    orderInfo: 'Thanh toán vé cho trận ${detailsMatch.match.homeTeam.teamName} vs ${detailsMatch.match.awayTeam.teamName}',
-                    amount: totlePrice,
+                    orderId: '${DateTime.now().millisecondsSinceEpoch}', // Hoặc mã đơn hàng của bạn
+                    orderInfo: 'ThanhToanVe',
+                    amount: widget.totlePrice.toStringAsFixed(0),
                     returnUrl: 'https://intership.hqsolutions.vn/api/Payment/onepay-return', // URL backend xử lý kết quả thanh toán
                   ),
                 );

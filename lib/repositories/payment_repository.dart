@@ -18,6 +18,7 @@ class PaymentRepository {
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
+      print("json: ${request.toJson()}");
       return PaymentResponseModel.fromJson(json);
     } else {
       print('❌ Payment API Error: StatusCode=${response.statusCode}');
