@@ -6,6 +6,7 @@ import 'package:dio/io.dart';
 class ApiClient {
   static final Dio _dio = Dio(BaseOptions(
     baseUrl: 'https://intership.hqsolutions.vn/api/',
+    // baseUrl: 'https://10.0.2.2:7023/api/',
     connectTimeout: const Duration(seconds: 50),
     receiveTimeout: const Duration(seconds: 50),
   ))

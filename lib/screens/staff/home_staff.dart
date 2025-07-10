@@ -5,6 +5,7 @@ import 'package:football_ticket/blocs/booking_details/booking_details_event.dart
 import 'package:football_ticket/blocs/booking_details/booking_details_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/detail_booking_model.dart';
+import 'package:football_ticket/models/qrScanResponseModel.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
 import 'package:football_ticket/screens/staff/report.dart';
@@ -19,7 +20,7 @@ class HomeStaff extends StatefulWidget {
 }
 
 class _HomeStaffState extends State<HomeStaff> {
-  DetailBookingModel? booking;
+  QrScanResponseModel? booking;
   final GlobalKey qrKey = GlobalKey(debugLabel: "QR");
   Barcode? result;
   QRViewController? controller;
@@ -46,10 +47,12 @@ class _HomeStaffState extends State<HomeStaff> {
             _showDialog(context, booking!);
           }
         } else if (state is BookingDetailsErrorState) {
-          // Show error message
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.error)));
+          setState(() {
+            isDialogOpen = true;
+          });
+          if (booking != null) {
+            _showDialogError(context, "Không tìm thấy vé hoặc trận đấu đã kết thúc");
+          }
           print("Error: ${state.error}");
         }
       },
@@ -73,19 +76,19 @@ class _HomeStaffState extends State<HomeStaff> {
                 },
                 child: Icon(Icons.search, color: AppColors.primary, size: 35),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Report()),
-                  );
-                },
-                child: Icon(
-                  Icons.error_outline,
-                  color: AppColors.error,
-                  size: 25,
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => Report()),
+              //     );
+              //   },
+              //   child: Icon(
+              //     Icons.error_outline,
+              //     color: AppColors.error,
+              //     size: 25,
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -127,7 +130,7 @@ class _HomeStaffState extends State<HomeStaff> {
           result = scanData;
           context.read<BookingDetailsBloc>().add(
             LoadBookingDetailsEvent(
-              bookingId: result!.code!.toString(),
+              ticketId: result!.code!.toString(),
               token: widget.user.token!,
             ),
           );
@@ -137,10 +140,10 @@ class _HomeStaffState extends State<HomeStaff> {
     });
   }
 
-  Future<void> _showDialog(BuildContext context, DetailBookingModel booking) {
+  Future<void> _showDialog(BuildContext context, QrScanResponseModel booking) {
     return showDialog(
       context: context,
-       barrierDismissible: false,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
@@ -150,8 +153,8 @@ class _HomeStaffState extends State<HomeStaff> {
             padding: EdgeInsets.all(20),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   Icons.check_circle_outline,
@@ -160,39 +163,100 @@ class _HomeStaffState extends State<HomeStaff> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  
                   textAlign: TextAlign.center,
-                  booking.matchName,style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400)),
-                Text("Time: ${booking.matchTime}",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400),),
-                // Text("Status: ${booking.status}"),
-                 Text("Status: Vào sân",style: TextStyle(fontSize: 10,fontWeight: FontWeight.w400),),
+                  booking.matchName,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  "Time: ${booking.matchTime}",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                ),
+
+                Text(
+                  "Status: ${booking.currentStatus}",
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                ),
                 SizedBox(height: 20),
-                // TextButton(
-                //   style: TextButton.styleFrom(
-                //     backgroundColor: AppColors.primary,
-                //   ),
-                //   onPressed: () async {
-                //     Navigator.of(context).pop();
-                //     setState(() {
-                      
-                //       isDialogOpen = false;
-                //       result = null;
-                //     });
-                //     await controller?.resumeCamera();
-                //   },
-                //   child: Text(
-                //     "Show Details",
-                //     style: TextStyle(color: AppColors.white),
-                //   ),
-                // ),
-                 TextButton(
+                TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: AppColors.primary,
                   ),
                   onPressed: () async {
                     Navigator.of(context).pop();
                     setState(() {
-                      
+                      isDialogOpen = false;
+                      result = null;
+                    });
+                    await controller?.resumeCamera();
+                  },
+                  child: Text(
+                    "Show Details",
+                    style: TextStyle(color: AppColors.white),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      isDialogOpen = false;
+                      result = null;
+                    });
+                    await controller?.resumeCamera();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Đóng",
+                      style: TextStyle(color: AppColors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showDialogError(BuildContext context, String message) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  size: 100,
+                  color: AppColors.success,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  textAlign: TextAlign.center,
+                  message,
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                ),
+
+                TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
                       isDialogOpen = false;
                       result = null;
                     });

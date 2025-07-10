@@ -17,8 +17,8 @@ class BookingDetailsBloc
   ) async {
     emit(BookingDetailsLoadingState());
     try {
-      final bookingDetails = await bookingDetailRepo.LoadBookingById(
-        event.bookingId,
+      final bookingDetails = await bookingDetailRepo.scanQr(
+        event.ticketId,
         event.token,
       );
       emit(BookingDetailsLoadedState(bookingDetails: bookingDetails));

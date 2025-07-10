@@ -8,14 +8,14 @@ class BookingDetailsEvent extends Equatable{
 }
 
 class LoadBookingDetailsEvent extends BookingDetailsEvent {
-  final String bookingId;
+  final String ticketId;
   final String token;
 
   const LoadBookingDetailsEvent({
-    required this.bookingId,
+    required this.ticketId,
     required this.token,
   });
 
   @override
-  List<Object?> get props => [bookingId, token];
+  List<Object?> get props => [ticketId, token];
 }

@@ -11,7 +11,7 @@ import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/user_model.dart';
-import 'package:uni_links/uni_links.dart';
+// import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CartScreen extends StatefulWidget {
@@ -40,26 +40,26 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    _sub = uriLinkStream.listen((Uri? uri) {
-      final result = uri?.queryParameters['result'];
-      if (result == 'success') {
-        // Gọi API booking
-        context.read<BookingBloc>().add(
-          BookTicketEvent(
-            userId: widget.user.uid!,
-            matchId: widget.detailsMatch.idMatch,
-            standId: widget.stand.standId,
-            quantity: widget.quantity,
-          ),
-        );
-      } else if (result == 'fail') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Payment failed')),
-        );
-      }
-    }, onError: (err) {
-      print('Deep link error: $err');
-    });
+    // _sub = uriLinkStream.listen((Uri? uri) {
+    //   final result = uri?.queryParameters['result'];
+    //   if (result == 'success') {
+    //     // Gọi API booking
+    //     context.read<BookingBloc>().add(
+    //       BookTicketEvent(
+    //         userId: widget.user.uid!,
+    //         matchId: widget.detailsMatch.idMatch,
+    //         standId: widget.stand.standId,
+    //         quantity: widget.quantity,
+    //       ),
+    //     );
+    //   } else if (result == 'fail') {
+    //     ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(content: Text('Payment failed')),
+    //     );
+    //   }
+    // }, onError: (err) {
+    //   print('Deep link error: $err');
+    // });
   }
 
   @override

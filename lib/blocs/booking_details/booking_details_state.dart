@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:football_ticket/models/detail_booking_model.dart';
+import 'package:football_ticket/models/qrScanResponseModel.dart';
 
 class BookingDetailsState extends Equatable {
   const BookingDetailsState();
@@ -13,7 +14,7 @@ class BookingDetailsInitialState extends BookingDetailsState {}
 class BookingDetailsLoadingState extends BookingDetailsState {}
 
 class BookingDetailsLoadedState extends BookingDetailsState {
-  final DetailBookingModel bookingDetails;
+  final QrScanResponseModel bookingDetails;
 
   const BookingDetailsLoadedState({required this.bookingDetails});
 
