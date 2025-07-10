@@ -13,8 +13,7 @@ import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/ticket_detail_model.dart';
 import 'package:football_ticket/models/user_model.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:football_ticket/screens/payment/payment_result_handler.dart';
+import 'package:football_ticket/screens/payment/webview_payment_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final MatchDetailsModel detailsMatch;
@@ -37,50 +36,6 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  late StreamSubscription _sub;
-
-  @override
-  void initState() {
-    super.initState();
-    // _sub = uriLinkStream.listen((Uri? uri) {
-    //   final result = uri?.queryParameters['result'];
-    //   if (result == 'success') {
-    //     // Gọi API booking
-    //     context.read<BookingBloc>().add(
-    //       BookTicketEvent(
-    //         userId: widget.user.uid!,
-    //         matchId: widget.detailsMatch.idMatch,
-    //         standId: widget.stand.standId,
-    //         quantity: widget.quantity,
-    //       ),
-    //     );
-    //   } else if (result == 'fail') {
-    //     ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(content: Text('Payment failed')),
-    //     );
-    //   }
-    // }, onError: (err) {
-    //   print('Deep link error: $err');
-    // });
-  }
-
-  @override
-  void dispose() {
-    _sub.cancel();
-    super.dispose();
-  }
-
-  void _startPayment() {
-    context.read<PaymentBloc>().add(
-      CreatePaymentEvent(
-        orderId: 'ORDER123',
-        orderInfo: 'Buy ${widget.quantity} ticket(s)',
-        amount: widget.totlePrice.toStringAsFixed(0),
-        returnUrl: 'myapp://payment-result',
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,30 +141,32 @@ class _CartScreenState extends State<CartScreen> {
         child: BlocConsumer<PaymentBloc, PaymentState>(
           listener: (context, state) async {
             if (state is PaymentSuccess) {
-              final Uri paymentUrl = Uri.parse(state.paymentUrl);
-              String paymentstring = paymentUrl.toString();
-              ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(paymentstring)));
-              if (await canLaunchUrl(paymentUrl)) {
-                await launchUrl(
-                    paymentUrl, mode: LaunchMode.inAppBrowserView);
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => WebViewPaymentScreen(paymentUrl: state.paymentUrl),
+                ),
+              );
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        PaymentResultHandler(
-                          detailsMatch: widget.detailsMatch,
-                          stand: widget.stand,
-                          quantity: widget.quantity,
-                          user: widget.user,
-                        ),
+              if (result == true) {
+                context.read<BookingBloc>().add(
+                  BookTicketEvent(
+                    userId: widget.user.uid!,
+                    matchId: widget.detailsMatch.idMatch,
+                    standId: widget.stand.standId,
+                    quantity: widget.quantity,
                   ),
                 );
+                // push to CartSuccess nếu muốn
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open payment URL')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Thanh toán thất bại!")),
+                );
               }
             } else if (state is PaymentFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Payment failed: ${state.message}")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Payment failed: ${state.message}")),
+              );
             }
           },
           builder: (context, state) {
@@ -226,10 +183,10 @@ class _CartScreenState extends State<CartScreen> {
                   : () {
                 context.read<PaymentBloc>().add(
                   CreatePaymentEvent(
-                    orderId: '${DateTime.now().millisecondsSinceEpoch}', // Hoặc mã đơn hàng của bạn
+                    orderId: '${DateTime.now().millisecondsSinceEpoch}',
                     orderInfo: 'ThanhToanVe',
                     amount: widget.totlePrice.toStringAsFixed(0),
-                    returnUrl: 'https://intership.hqsolutions.vn/api/Payment/onepay-return', // URL backend xử lý kết quả thanh toán
+                    returnUrl: 'https://intership.hqsolutions.vn/api/Payment/onepay-return',
                   ),
                 );
               },
