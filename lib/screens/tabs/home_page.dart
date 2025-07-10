@@ -107,18 +107,19 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Hi ${user.name!}", style: AppTextStyles.title2),
-                    // GestureDetector(
-                    //   onTap: () {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(builder: (context) => CartScreen()),
-                    //     );
-                    //   },
-                    //   child: Icon(
-                    //     Icons.shopping_cart_outlined,
-                    //     color: AppColors.grey,
-                    //   ),
-                    // ),
+                    GestureDetector(
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) =>CartScreen()),
+                        // );
+                      },
+                      child: Lottie.asset(
+                        "assets/notification.json",
+                        width: 50,
+                        height: 50,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -158,27 +159,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
 
-                          // Text(
-                          //   "Highlight Match",
-                          //   style: AppTextStyles.title2.copyWith(
-                          //     color: AppColors.textMain,
-                          //   ),
-                          // ),
-                          // SizedBox(height: 15),
-                          // SizedBox(
-                          //   height: 215,
-                          //   child: PageView(
-                          //     controller: _pageController,
-                          //     scrollDirection: Axis.horizontal,
-                          //     children: [
-                          //       CardHighlight(),
-                          //       CardHighlight(),
-                          //       CardHighlight(),
-                          //       CardHighlight(),
-                          //       CardHighlight(),
-                          //     ],
-                          //   ),
-                          // ),
                           SizedBox(height: 10),
                           Text(
                             "Maches",
