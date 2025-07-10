@@ -136,9 +136,11 @@ class CartScreen extends StatelessWidget {
           listener: (context, state) async {
             if (state is PaymentSuccess) {
               final Uri paymentUrl = Uri.parse(state.paymentUrl);
+              String paymentstring = paymentUrl.toString();
+              ScaffoldMessenger.of(context).showSnackBar( SnackBar(content: Text(paymentstring)));
               if (await canLaunchUrl(paymentUrl)) {
                 await launchUrl(
-                    paymentUrl, mode: LaunchMode.externalApplication);
+                    paymentUrl, mode: LaunchMode.inAppBrowserView);
 
                 Navigator.push(
                   context,
