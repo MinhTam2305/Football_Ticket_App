@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/auth/auth_bloc.dart';
@@ -103,7 +104,13 @@ class _LoginState extends State<LoginScreen> {
         backgroundColor: AppColors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 80),
+            padding:
+                kIsWeb
+                    ? EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.4,
+                      vertical: 100,
+                    )
+                    : EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 80),
             child: Column(
               // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
