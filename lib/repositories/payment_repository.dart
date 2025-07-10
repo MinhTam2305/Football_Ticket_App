@@ -1,32 +1,25 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '/models/payment_request_model.dart';
+import 'package:football_ticket/models/payment_request_model.dart';
+import 'package:football_ticket/models/payment_response_model.dart';
 
 class PaymentRepository {
   final String baseUrl;
+
   PaymentRepository({required this.baseUrl});
 
-  Future<String> createPayment({
-    required String userId,
-    required int amount,
-    required String description,
-  }) async {
-    final url = Uri.parse('$baseUrl/api/Payment/create-payment');
+  Future<PaymentResponseModel> createPayment(PaymentRequestModel request) async {
     final response = await http.post(
-      url,
+      Uri.parse('$baseUrl/api/Payment/create-payment'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(PaymentRequestModel(
-        userId: userId,
-        amount: amount,
-        description: description,
-      ).toJson()),
+      body: jsonEncode(request.toJson()),
     );
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-      return json['paymentUrl'];
+      return PaymentResponseModel.fromJson(json);
     } else {
-      throw Exception('Failed to create payment');
+      throw Exception('Failed to create payment link');
     }
   }
 }
