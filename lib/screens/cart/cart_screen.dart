@@ -176,7 +176,7 @@ class CartScreen extends StatelessWidget {
                     orderId: 'ORDER_${DateTime.now().millisecondsSinceEpoch}', // Hoặc mã đơn hàng của bạn
                     orderInfo: 'Thanh toán vé cho trận ${detailsMatch.match.homeTeam.teamName} vs ${detailsMatch.match.awayTeam.teamName}',
                     amount: totlePrice,
-                    returnUrl: 'https://example.com/payment-result', // URL backend xử lý kết quả thanh toán
+                    returnUrl: 'https://intership.hqsolutions.vn/api/Payment/onepay-return', // URL backend xử lý kết quả thanh toán
                   ),
                 );
               },
