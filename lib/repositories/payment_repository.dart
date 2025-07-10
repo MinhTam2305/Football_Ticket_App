@@ -9,6 +9,7 @@ class PaymentRepository {
   PaymentRepository({required this.baseUrl});
 
   Future<PaymentResponseModel> createPayment(PaymentRequestModel request) async {
+    print('Request body: ${jsonEncode(request.toJson())}');
     final response = await http.post(
       Uri.parse('$baseUrl/api/Payment/create-payment'),
       headers: {'Content-Type': 'application/json'},
@@ -19,6 +20,8 @@ class PaymentRepository {
       final json = jsonDecode(response.body);
       return PaymentResponseModel.fromJson(json);
     } else {
+      print('❌ Payment API Error: StatusCode=${response.statusCode}');
+      print('❌ Response body: ${response.body}');
       throw Exception('Failed to create payment link');
     }
   }
