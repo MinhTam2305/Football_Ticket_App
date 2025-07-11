@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
@@ -22,6 +24,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   late UserModel user;
   bool isUser = true;
 
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +35,41 @@ class _BottomNavigationState extends State<BottomNavigation> {
     } else {
       isUser = false;
     }
+
+   
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.notification != null) {
+        // Hiển thị local notification
+        await flutterLocalNotificationsPlugin.show(
+          message.notification.hashCode,
+          message.notification!.title ?? '',
+          message.notification!.body ?? '',
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'high_importance_channel',
+              'Thông báo',
+              channelDescription: 'Kênh thông báo cho Football Ticket App',
+              importance: Importance.max,
+              priority: Priority.high,
+              icon: '@mipmap/ic_launcher',
+            ),
+            iOS: DarwinNotificationDetails(),
+          ),
+        );
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      // Xử lý khi người dùng nhấn vào thông báo (có thể điều hướng hoặc custom logic ở đây)
+    });
   }
 
   void _onItemTapped(int index) {

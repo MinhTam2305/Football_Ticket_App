@@ -19,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<GetUserById>(_getUserFromDb);
     on<ResetPassword>(_resetPassword);
     on<ChangePassword>(_changePassword);
+    on<AddTokenDevice>(_addTokenDevice);
   }
 
   Future<void> _sendOpt(SendOtpRequetsed event, Emitter<AuthState> emit) async {
@@ -184,6 +185,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailure(e.toString()));
       }
       emit(AuthFailure(message));
+    }
+  }
+
+  Future<void> _addTokenDevice(
+    AddTokenDevice event,
+    Emitter<AuthState> emit,
+  ) async {
+    String message = "";
+    try {
+      message = await _authRepo.addTokenDevice(event.token, event.tokenDevice);
+    } catch (e) {
+      if (message.isEmpty) {
+        print(e.toString());
+      }
+      print(message);
     }
   }
 }
