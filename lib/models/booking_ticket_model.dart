@@ -25,17 +25,24 @@ class BookingTicket {
 
   factory BookingTicket.fromJson(Map<String, dynamic> json) {
     return BookingTicket(
-      bookingId: json['bookingId'],
-      userId: json['userId'],
-      matchId: json['matchId'],
-      matchName: json['matchName'],
-      matchDateTime: DateTime.parse(json['matchDateTime']),
-      bookingTime: DateTime.parse(json['bookingTime']),
-      bookingStatus: json['bookingStatus'],
-      tickets: (json['tickets'] as List)
-          .map((e) => TicketModel.fromJson(e))
-          .toList(),
-      totalAmount: (json['totalAmount'] as num).toDouble(),
+      bookingId: json['bookingId'] ?? '',
+      userId: json['userId'] ?? '',
+      matchId: json['matchId'] ?? '',
+      matchName: json['matchName'] ?? '',
+      matchDateTime: json['matchDateTime'] != null
+          ? DateTime.parse(json['matchDateTime'])
+          : DateTime.now(), // fallback nếu null
+      bookingTime: json['bookingTime'] != null
+          ? DateTime.parse(json['bookingTime'])
+          : DateTime.now(),
+      bookingStatus: json['bookingStatus'] ?? '',
+      tickets: (json['tickets'] as List<dynamic>?)
+          ?.map((e) => TicketModel.fromJson(e))
+          .toList() ??
+          [],
+      totalAmount: json['totalAmount'] != null
+          ? (json['totalAmount'] as num).toDouble()
+          : 0.0,
     );
   }
 }
