@@ -1,7 +1,7 @@
 class TicketModel {
   final String ticketId;
   final String standName;
-  final int price;
+  final double price;
   final String qrCode;
   final DateTime issuedAt;
   final String ticketStatus;
@@ -21,7 +21,7 @@ class TicketModel {
     return TicketModel(
       ticketId: json['ticketId'],
       standName: json['standName'],
-      price: json['price'],
+      price: (json['price'] as num).toDouble(),
       qrCode: json['qrCode'] ?? '',
       issuedAt: DateTime.parse(json['issuedAt']),
       ticketStatus: json['ticketStatus'],

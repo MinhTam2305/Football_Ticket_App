@@ -1,15 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
 import '/blocs/ticket/ticket_bloc.dart';
 import '/blocs/ticket/ticket_event.dart';
 import '/blocs/ticket/ticket_state.dart';
 import '/models/booking_ticket_model.dart';
 import '/models/ticket_model.dart';
 import '/core/constants/colors.dart';
+import '/screens/ticket/ticket_detail_screen.dart';
 
 class TicketScreen extends StatefulWidget {
-  const TicketScreen({super.key});
+  final String userId;
+  final String token;
+
+  const TicketScreen({
+    super.key,
+    required this.userId,
+    required this.token,
+  });
 
   @override
   State<TicketScreen> createState() => _TicketScreenState();
@@ -23,8 +32,8 @@ class _TicketScreenState extends State<TicketScreen> {
     super.initState();
     context.read<TicketBloc>().add(
       FetchMyTickets(
-        userId: 'da24b181-792a-485c-ad80-f010aa8a3bb3', // 👈 thay bằng SharedPreferences nếu có
-        token: 'YOUR_TOKEN_HERE',
+        userId: widget.userId,
+        token: widget.token,
       ),
     );
   }
@@ -38,7 +47,10 @@ class _TicketScreenState extends State<TicketScreen> {
         title: const Text('Ticket'),
         backgroundColor: AppColors.background,
         titleTextStyle: const TextStyle(
-            fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textMain),
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: AppColors.textMain,
+        ),
       ),
       body: Column(
         children: [
@@ -69,10 +81,27 @@ class _TicketScreenState extends State<TicketScreen> {
                     itemCount: ticketItems.length,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
-                      final booking = ticketItems[index]["booking"] as BookingTicket;
-                      final ticket = ticketItems[index]["ticket"] as TicketModel;
+                      final booking =
+                      ticketItems[index]["booking"] as BookingTicket;
+                      final ticket =
+                      ticketItems[index]["ticket"] as TicketModel;
 
-                      return _buildTicketItem(ticket, booking);
+                      /// 🔹 bao Container bằng InkWell để điều hướng
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TicketDetailScreen(
+                                ticket: ticket,
+                                booking: booking,
+                              ),
+                            ),
+                          );
+                        },
+                        child: _buildTicketItem(ticket, booking),
+                      );
                     },
                   );
                 } else if (state is TicketError) {
@@ -87,6 +116,8 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
+
+  // ----------------- UI helpers -----------------
 
   Widget _buildTab() {
     return Container(
@@ -106,14 +137,10 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Widget _buildTabButton(String label, int index) {
-    bool isSelected = selectedIndex == index;
+    final bool isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+        onTap: () => setState(() => selectedIndex = index),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
@@ -123,7 +150,7 @@ class _TicketScreenState extends State<TicketScreen> {
           alignment: Alignment.center,
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               color: AppColors.textMain,
               fontWeight: FontWeight.bold,
             ),
@@ -174,7 +201,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Giá vé: ${ticket.price} đ',
+                  'Giá vé: ${ticket.price.toStringAsFixed(0)} đ',
                   style: const TextStyle(color: AppColors.textSub),
                 ),
               ],
@@ -186,6 +213,7 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   String _formatDateTime(DateTime dt) {
-    return "${dt.day}/${dt.month}/${dt.year} - ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}";
+    return "${dt.day}/${dt.month}/${dt.year} - "
+        "${dt.hour}:${dt.minute.toString().padLeft(2, '0')}";
   }
 }

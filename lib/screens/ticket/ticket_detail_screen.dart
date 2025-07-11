@@ -24,7 +24,7 @@ class TicketDetailScreen extends StatelessWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         title: const Text(
-          'Ticket',
+          'Ticket Detail',
           style: TextStyle(
             color: AppColors.textMain,
             fontSize: 24,
@@ -35,75 +35,94 @@ class TicketDetailScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            /// 🔹 Tên trận đấu
             Text(
               booking.matchName,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textMain,
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: QrImageView(
-                data: ticket.qrCode,
-                version: QrVersions.auto,
-                size: 220.0,
+            const SizedBox(height: 20),
+
+            /// 🔹 QR Code
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 6,
+                      offset: Offset(0, 2),
+                    )
+                  ],
+                ),
+                child: QrImageView(
+                  data: ticket.qrCode,
+                  version: QrVersions.auto,
+                  size: 200.0,
+                ),
               ),
             ),
-            const SizedBox(height: 16),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Status: ${ticket.ticketStatus}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textMain,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.access_time, size: 18, color: AppColors.textSub),
-                      const SizedBox(width: 4),
-                      Text(
-                        _formatDateTime(booking.matchDateTime),
-                        style: const TextStyle(color: AppColors.textSub),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 18, color: AppColors.textSub),
-                      const SizedBox(width: 4),
-                      const Text("Sân vận động Gò Đậu", style: TextStyle(color: AppColors.textSub)),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text('Khán đài: ${ticket.standName}', style: const TextStyle(color: AppColors.textSub)),
-                  Text('Giá vé: ${ticket.price} đ', style: const TextStyle(color: AppColors.textSub)),
-                  Text('Ngày xuất vé: ${_formatDateTime(ticket.issuedAt)}',
-                      style: const TextStyle(color: AppColors.textSub)),
-                ],
+            const SizedBox(height: 20),
+
+            /// 🔹 Thông tin vé
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ListView(
+                  children: [
+                    _infoRow('Trạng thái', ticket.ticketStatus),
+                    _infoRow('Ngày thi đấu', _formatDateTime(booking.matchDateTime)),
+                    _infoRow('Khán đài', ticket.standName),
+                    _infoRow('Giá vé', '${ticket.price.toStringAsFixed(0)} đ'),
+                    _infoRow('Ngày xuất vé', _formatDateTime(ticket.issuedAt)),
+                    _infoRow('Địa điểm', 'Sân vận động Gò Đậu'),
+                    _infoRow('Mã vé', ticket.ticketId),
+                  ],
+                ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(
+              "$label:",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textMain,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 5,
+            child: Text(
+              value,
+              style: const TextStyle(color: AppColors.textSub),
+            ),
+          ),
+        ],
       ),
     );
   }

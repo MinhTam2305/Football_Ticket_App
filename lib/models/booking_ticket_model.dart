@@ -9,7 +9,7 @@ class BookingTicket {
   final DateTime bookingTime;
   final String bookingStatus;
   final List<TicketModel> tickets;
-  final int totalAmount;
+  final double totalAmount;
 
   BookingTicket({
     required this.bookingId,
@@ -35,7 +35,7 @@ class BookingTicket {
       tickets: (json['tickets'] as List)
           .map((e) => TicketModel.fromJson(e))
           .toList(),
-      totalAmount: json['totalAmount'],
+      totalAmount: (json['totalAmount'] as num).toDouble(),
     );
   }
 }
