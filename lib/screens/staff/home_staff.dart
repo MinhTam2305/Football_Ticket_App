@@ -53,7 +53,7 @@ class _HomeStaffState extends State<HomeStaff> {
 
           _showDialogError(
             context,
-            "Không tìm thấy vé hoặc trận đấu đã kết thúc",
+            state.error ?? "Không tìm thấy vé hoặc trận đấu đã kết thúc",
           );
 
           print("Error: ${state.error}");

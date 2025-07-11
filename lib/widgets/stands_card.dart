@@ -25,6 +25,7 @@ class _StandsCardState extends State<StandsCard> {
   double unitPrice = 0;
   int selectedIndex = 0;
   int availableTickets = 0;
+  bool hetVe = false;
 
 @override
 void initState() {
@@ -95,8 +96,9 @@ void decre() {
                         alignment: WrapAlignment.spaceBetween,
                         children:
                             widget.stands.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final stand = entry.value;
+                              final index = entry.key;                      
+                              final stand = entry.value;                       
+                              
                               return SizedBox(
                                 width:
                                     MediaQuery.of(context).size.width / 3 - 50,
@@ -116,8 +118,9 @@ void decre() {
                                   },
                                   child: CardStand(
                                     stand: stand.standName,
-                                    quantity:
-                                        "${stand.availabelTickets}/${stand.totalTickets}",
+                                    quantity: stand.availabelTickets == 0
+                                        ? "Hết vé"
+                                        : "${stand.availabelTickets}/${stand.totalTickets}",
                                     isTarget: selectedIndex == index,
                                   ),
                                 ),

@@ -178,19 +178,23 @@ class _DetailsMatchState extends State<DetailsMatch> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => CartScreen(
-                      detailsMatch: widget.detailsMatch,
-                      user: widget.user,
-                      stand: selectedStand!,
-                      totlePrice: selectedPrice ?? 0.0,
-                      quantity: selectedQuantity ?? 1,
-                    ),
-              ),
-            );
+            widget.detailsMatch.stand.isEmpty
+                ? ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Chưa thông tin khán đài")),
+                )
+                : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => CartScreen(
+                          detailsMatch: widget.detailsMatch,
+                          user: widget.user,
+                          stand: selectedStand!,
+                          totlePrice: selectedPrice ?? 0.0,
+                          quantity: selectedQuantity ?? 1,
+                        ),
+                  ),
+                );
           },
           child: Container(
             width: MediaQuery.of(context).size.width,
