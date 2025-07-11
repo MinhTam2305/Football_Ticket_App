@@ -18,7 +18,7 @@ class AppColors {
 class AppTextStyles {
   static const title1 = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
   static const title2 = TextStyle(fontSize: 20, fontWeight: FontWeight.w600);
-  static const body1 = TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
+  static const body1 = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
   static const body2 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400);
   static const caption = TextStyle(fontSize: 12, fontWeight: FontWeight.w300);
   static const button = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);

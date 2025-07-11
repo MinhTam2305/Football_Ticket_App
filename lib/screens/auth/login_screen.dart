@@ -11,6 +11,7 @@ import 'package:football_ticket/widgets/button_custom.dart';
 import 'package:football_ticket/widgets/show_loading_dialog.dart';
 import 'package:football_ticket/widgets/text_field_custom.dart';
 import 'package:lottie/lottie.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginScreen extends StatefulWidget {
   void Function()? onTap;
@@ -68,7 +69,7 @@ class _LoginState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state is OtpSent) {
           Navigator.of(context).pop();
           Navigator.pushReplacement(
@@ -83,7 +84,13 @@ class _LoginState extends State<LoginScreen> {
           );
         } else if (state is Logined) {
           Navigator.of(context).pop();
-
+          String? deviceToken = await FirebaseMessaging.instance.getToken();
+          print("Device Token: $deviceToken");
+          if (deviceToken != null) {
+            context.read<AuthBloc>().add(
+              AddTokenDevice(state.user.token!, deviceToken),
+            );
+          }
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Đăng nhập thành công')));

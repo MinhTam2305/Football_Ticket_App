@@ -86,3 +86,11 @@ class ChangePassword extends AuthEvent {
   @override
   List<Object?> get props => [token, currentPassword, newPassword];
 }
+
+class AddTokenDevice extends AuthEvent {
+  final String token;
+  final String tokenDevice;
+  AddTokenDevice(this.token, this.tokenDevice);
+  @override
+  List<Object?> get props => [token, tokenDevice];
+}

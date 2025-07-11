@@ -1,14 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/booking_details/booking_details_bloc.dart';
 import 'package:football_ticket/blocs/booking_details/booking_details_event.dart';
 import 'package:football_ticket/blocs/booking_details/booking_details_state.dart';
 import 'package:football_ticket/core/constants/colors.dart';
-import 'package:football_ticket/models/detail_booking_model.dart';
 import 'package:football_ticket/models/qrScanResponseModel.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
-import 'package:football_ticket/screens/staff/report.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class HomeStaff extends StatefulWidget {
@@ -50,9 +50,12 @@ class _HomeStaffState extends State<HomeStaff> {
           setState(() {
             isDialogOpen = true;
           });
-          if (booking != null) {
-            _showDialogError(context, "Không tìm thấy vé hoặc trận đấu đã kết thúc");
-          }
+
+          _showDialogError(
+            context,
+            "Không tìm thấy vé hoặc trận đấu đã kết thúc",
+          );
+
           print("Error: ${state.error}");
         }
       },
@@ -151,68 +154,127 @@ class _HomeStaffState extends State<HomeStaff> {
           ),
           child: Container(
             padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  size: 100,
-                  color: AppColors.success,
+                Center(
+                  child: Icon(
+                    Icons.check_circle_outline,
+                    size: 100,
+                    color: AppColors.success,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Match:",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Flexible(
+                      child: Text(
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
+                        booking.matchName,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
-                Text(
-                  textAlign: TextAlign.center,
-                  booking.matchName,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                Row(
+                  children: [
+                    Text(
+                      "Time:",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      booking.matchTime,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  "Time: ${booking.matchTime}",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
-                ),
-
-                Text(
-                  "Status: ${booking.currentStatus}",
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text(
+                      "Status:",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      booking.currentStatus,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      isDialogOpen = false;
-                      result = null;
-                    });
-                    await controller?.resumeCamera();
-                  },
-                  child: Text(
-                    "Show Details",
-                    style: TextStyle(color: AppColors.white),
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                  ),
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    setState(() {
-                      isDialogOpen = false;
-                      result = null;
-                    });
-                    await controller?.resumeCamera();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Đóng",
-                      style: TextStyle(color: AppColors.white),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          isDialogOpen = false;
+                          result = null;
+                        });
+                        await controller?.resumeCamera();
+                      },
+                      child: Text(
+                        "Show Details",
+                        style: TextStyle(color: AppColors.white),
+                      ),
                     ),
-                  ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                      ),
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        setState(() {
+                          isDialogOpen = false;
+                          result = null;
+                        });
+                        await controller?.resumeCamera();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Đóng",
+                          style: TextStyle(color: AppColors.white),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -238,18 +300,14 @@ class _HomeStaffState extends State<HomeStaff> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.check_circle_outline,
-                  size: 100,
-                  color: AppColors.success,
-                ),
+                Icon(Icons.error_outline, size: 100, color: AppColors.error),
                 SizedBox(height: 10),
                 Text(
                   textAlign: TextAlign.center,
                   message,
-                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                 ),
-
+                SizedBox(height: 10),
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: AppColors.primary,

@@ -204,10 +204,33 @@ class AuthRepository {
           final msg = e.response?.data["message"] ?? 'Đổi mật khẩu thất bại';
           throw Exception(msg);
         }
-      }
-      else {
+      } else {
         throw Exception("Lỗi không xác định: $e");
       }
+    }
+  }
+
+  Future<String> addTokenDevice(String token, String tokenDevice) async {
+    try {
+      final response = await _dio.post(
+        'deviceTokenApi',
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+
+            'Authorization': 'Bearer $token',
+          },
+        ),
+        data: {'token': tokenDevice},
+      );
+      if (response.statusCode == 200) {
+        print("Token added successfully: ${response.data}");
+        return response.data['message'] ?? 'Thêm token thành công';
+      } else {
+        throw Exception('Thêm token thất bại');
+      }
+    } catch (e) {
+      throw Exception("Lỗi không xác định: $e");
     }
   }
 }

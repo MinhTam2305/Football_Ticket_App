@@ -72,3 +72,21 @@ class ResestPasswordSuccessed extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class AddTokenDeviceSuccessed extends AuthState {
+  final String message;
+
+  AddTokenDeviceSuccessed(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class AddTokenDeviceFailure extends AuthState {
+  final String message;
+
+  AddTokenDeviceFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
