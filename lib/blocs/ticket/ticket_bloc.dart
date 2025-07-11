@@ -1,14 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '/models/ticket_model.dart';
-import '/blocs/ticket/ticket_event.dart';
-import '/blocs/ticket/ticket_state.dart';
+import '/models/booking_ticket_model.dart';
+import '/repositories/ticket_repository.dart';
+import 'ticket_event.dart';
+import 'ticket_state.dart';
 
 class TicketBloc extends Bloc<TicketEvent, TicketState> {
-  TicketBloc() : super(TicketInitial()) {
-    on<LoadTickets>((event, emit) async {
-      // Simulate loading tickets
-      await Future.delayed(const Duration(seconds: 1));
+  final TicketRepository repository;
 
+<<<<<<< HEAD
       List<Ticket> tickets = [
         Ticket(
           idTicket: '97013c6a-ada2-4dc0-9932-8068842d44ab',
@@ -61,8 +60,27 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
           stand: "A",
         ),
       ];
+=======
+  TicketBloc({required this.repository}) : super(TicketInitial()) {
+    on<FetchMyTickets>((event, emit) async {
+      emit(TicketLoading());
+>>>>>>> c85ab9ad5f48df6d20250d3b4379e10d12767ac4
 
-      emit(TicketLoaded(tickets));
+      try {
+        final data = await repository.fetchMyTickets(event.userId, event.token);
+
+        final used = data
+            .where((booking) => booking.tickets.every((t) => t.ticketStatus == 'đã sử dụng'))
+            .toList();
+
+        final unused = data
+            .where((booking) => booking.tickets.any((t) => t.ticketStatus != 'đã sử dụng'))
+            .toList();
+
+        emit(TicketLoaded(used: used, unused: unused));
+      } catch (e) {
+        emit(TicketError(message: e.toString()));
+      }
     });
   }
 }

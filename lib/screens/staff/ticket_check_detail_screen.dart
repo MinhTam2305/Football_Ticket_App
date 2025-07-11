@@ -4,9 +4,9 @@ import '/core/constants/colors.dart';
 import '/models/ticket_model.dart';
 
 class TicketCheckDetailScreen extends StatelessWidget {
-  final Ticket ticket;
+  //final Ticket ticket;
 
-  const TicketCheckDetailScreen({super.key, required this.ticket});
+  //const TicketCheckDetailScreen({super.key, required this.ticket});
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +35,12 @@ class TicketCheckDetailScreen extends StatelessWidget {
                 color: AppColors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: QrImageView(
-                data: ticket.matchName + ticket.dateTime,
-                version: QrVersions.auto,
-                size: 200.0,
+              //child: QrImageView(
+                //data: ticket.matchName + ticket.dateTime,
+                //version: QrVersions.auto,
+                //size: 200.0,
               ),
-            ),
+            //),
             const SizedBox(height: 24),
             Container(
               width: double.infinity,
@@ -52,14 +52,14 @@ class TicketCheckDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Buyer: ${ticket.buyerName}',
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
+                  //Text('Buyer: ${ticket.buyerName}',
+                      //style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       const Icon(Icons.access_time, size: 18),
                       const SizedBox(width: 6),
-                      Text(ticket.dateTime),
+                      //Text(ticket.dateTime),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -67,12 +67,12 @@ class TicketCheckDetailScreen extends StatelessWidget {
                     children: [
                       const Icon(Icons.location_on, size: 18),
                       const SizedBox(width: 6),
-                      Text(ticket.location),
+                      //Text(ticket.location),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Text('Quantity: ${ticket.quantity}'),
-                  Text('Stand: ${ticket.stand}'),
+                  //Text('Quantity: ${ticket.quantity}'),
+                  //Text('Stand: ${ticket.stand}'),
                 ],
               ),
             ),

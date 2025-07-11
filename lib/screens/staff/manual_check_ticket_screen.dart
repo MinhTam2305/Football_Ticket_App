@@ -76,7 +76,7 @@ class _ManualCheckTicketScreenState extends State<ManualCheckTicketScreen> {
                 onPressed: () {
                   final phone = phoneController.text.trim();
                   if (phone.isNotEmpty) {
-                    context.read<TicketCheckBloc>().add(CheckTicketByPhone(phone));
+                    //context.read<TicketCheckBloc>().add(CheckTicketByPhone(phone));
                   }
                 },
                 child: const Text(
@@ -92,33 +92,33 @@ class _ManualCheckTicketScreenState extends State<ManualCheckTicketScreen> {
             const SizedBox(height: 24),
 
             /// BlocBuilder xử lý trạng thái
-            BlocBuilder<TicketCheckBloc, TicketCheckState>(
-              builder: (context, state) {
-                if (state is TicketCheckLoading) {
-                  return const CircularProgressIndicator();
-                } else if (state is TicketCheckFailure) {
-                  return Text(
-                    state.error,
-                    style: const TextStyle(color: AppColors.error),
-                  );
-                } else if (state is TicketCheckSuccess) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ManualCheckResultScreen(
-                          name: state.name,
-                          phone: phoneController.text.trim(),
-                          tickets: state.tickets,
-                        ),
-                      ),
-                    );
-                  });
-                  return const SizedBox(); // tránh lỗi build lại nhiều lần
-                }
-                return const SizedBox();
-              },
-            ),
+            //BlocBuilder<TicketCheckBloc, TicketCheckState>(
+            //  builder: (context, state) {
+            //    if (state is TicketCheckLoading) {
+            //      return const CircularProgressIndicator();
+            //    } else if (state is TicketCheckFailure) {
+            //      return Text(
+            //        state.error,
+            //        style: const TextStyle(color: AppColors.error),
+            //      );
+            //    } else if (state is TicketCheckSuccess) {
+            //      WidgetsBinding.instance.addPostFrameCallback((_) {
+            //        Navigator.push(
+            //          context,
+            //          MaterialPageRoute(
+            //            builder: (_) => ManualCheckResultScreen(
+            //              name: state.name,
+            //             phone: phoneController.text.trim(),
+            //              tickets: state.tickets,
+            //            ),
+            //          ),
+            //        );
+            //      });
+            //      return const SizedBox(); // tránh lỗi build lại nhiều lần
+            //    }
+            //    return const SizedBox();
+            //  },
+          //  ),
           ],
         ),
       ),

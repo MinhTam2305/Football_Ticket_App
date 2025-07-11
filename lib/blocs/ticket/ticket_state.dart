@@ -1,20 +1,30 @@
 import 'package:equatable/equatable.dart';
-import '/models/ticket_model.dart';
+import '/models/booking_ticket_model.dart';
 
 abstract class TicketState extends Equatable {
-  const TicketState();
-
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class TicketInitial extends TicketState {}
 
-class TicketLoaded extends TicketState {
-  final List<Ticket> tickets;
+class TicketLoading extends TicketState {}
 
-  const TicketLoaded(this.tickets);
+class TicketLoaded extends TicketState {
+  final List<BookingTicket> used;
+  final List<BookingTicket> unused;
+
+  TicketLoaded({required this.used, required this.unused});
 
   @override
-  List<Object> get props => [tickets];
+  List<Object?> get props => [used, unused];
+}
+
+class TicketError extends TicketState {
+  final String message;
+
+  TicketError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
 }

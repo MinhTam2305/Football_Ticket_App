@@ -19,6 +19,7 @@ import 'package:football_ticket/repositories/match_repository.dart';
 import 'package:football_ticket/repositories/team_repository.dart';
 import 'package:football_ticket/repositories/booking_repository.dart';
 import 'package:football_ticket/repositories/payment_repository.dart';
+import 'package:football_ticket/repositories/ticket_repository.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -30,14 +31,15 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-        BlocProvider(create: (_) => TicketBloc()),
-        BlocProvider(create: (_) => TicketCheckBloc()),
+        BlocProvider(create: (_) => TicketBloc(repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'))),
+        //BlocProvider(create: (_) => TicketCheckBloc()),
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
         BlocProvider(
           create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
         ),
+<<<<<<< HEAD
         BlocProvider(
           create: (_) => BookingBloc(bookingRepository: BookingRepository()),
         ),
@@ -48,6 +50,22 @@ void main() async {
                   baseUrl: 'https://intership.hqsolutions.vn',
                 ),
               ),
+=======
+         BlocProvider(
+           create: (_) => BookingBloc(
+             bookingRepository: BookingRepository(),
+           ),
+         ),
+        BlocProvider(
+          create: (_) => TicketBloc(
+            repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'),
+          ),
+        ),
+        BlocProvider(
+          create: (_) => PaymentBloc(
+            paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
+          ),
+>>>>>>> c85ab9ad5f48df6d20250d3b4379e10d12767ac4
         ),
       ],
       child: const MyApp(),

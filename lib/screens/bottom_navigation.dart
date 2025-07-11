@@ -82,7 +82,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = <Widget>[
       isUser ? HomePage() : HomeStaff(user: widget.user),
-      isUser ? TicketScreen() : ManualCheckTicketScreen(),
+      isUser ? TicketScreen(userId: widget.user.uid!, token: widget.user.token!) : ManualCheckTicketScreen(),
       isUser ? ProfilePage() : ProfilePage(),
     ];
     return Scaffold(

@@ -1,10 +1,16 @@
 import 'package:equatable/equatable.dart';
 
 abstract class TicketEvent extends Equatable {
-  const TicketEvent();
-
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
-class LoadTickets extends TicketEvent {}
+class FetchMyTickets extends TicketEvent {
+  final String userId;
+  final String token;
+
+  FetchMyTickets({required this.userId, required this.token});
+
+  @override
+  List<Object?> get props => [userId, token];
+}
