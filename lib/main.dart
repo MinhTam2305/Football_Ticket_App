@@ -39,18 +39,6 @@ void main() async {
         BlocProvider(
           create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
         ),
-<<<<<<< HEAD
-        BlocProvider(
-          create: (_) => BookingBloc(bookingRepository: BookingRepository()),
-        ),
-        BlocProvider(
-          create:
-              (_) => PaymentBloc(
-                paymentRepository: PaymentRepository(
-                  baseUrl: 'https://intership.hqsolutions.vn',
-                ),
-              ),
-=======
          BlocProvider(
            create: (_) => BookingBloc(
              bookingRepository: BookingRepository(),
@@ -65,7 +53,6 @@ void main() async {
           create: (_) => PaymentBloc(
             paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
           ),
->>>>>>> c85ab9ad5f48df6d20250d3b4379e10d12767ac4
         ),
       ],
       child: const MyApp(),
