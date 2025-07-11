@@ -18,6 +18,7 @@ import 'package:football_ticket/repositories/match_repository.dart';
 import 'package:football_ticket/repositories/team_repository.dart';
 import 'package:football_ticket/repositories/booking_repository.dart';
 import 'package:football_ticket/repositories/payment_repository.dart';
+import 'package:football_ticket/repositories/ticket_repository.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -27,8 +28,8 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-        BlocProvider(create: (_) => TicketBloc()),
-        BlocProvider(create: (_) => TicketCheckBloc()),
+        BlocProvider(create: (_) => TicketBloc(repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'))),
+        //BlocProvider(create: (_) => TicketCheckBloc()),
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
@@ -40,7 +41,12 @@ void main() async {
              bookingRepository: BookingRepository(),
            ),
          ),
-         BlocProvider(
+        BlocProvider(
+          create: (_) => TicketBloc(
+            repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'),
+          ),
+        ),
+        BlocProvider(
           create: (_) => PaymentBloc(
             paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
           ),

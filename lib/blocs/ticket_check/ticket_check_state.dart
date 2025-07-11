@@ -7,10 +7,10 @@ class TicketCheckInitial extends TicketCheckState {}
 class TicketCheckLoading extends TicketCheckState {}
 
 class TicketCheckSuccess extends TicketCheckState {
-  final String name;
-  final List<Ticket> tickets;
+  //final String name;
+  //final List<Ticket> tickets;
 
-  TicketCheckSuccess({required this.name, required this.tickets});
+  //TicketCheckSuccess({required this.name, required this.tickets});
 }
 
 class TicketCheckFailure extends TicketCheckState {

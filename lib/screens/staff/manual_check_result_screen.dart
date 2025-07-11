@@ -7,13 +7,13 @@ import 'ticket_check_detail_screen.dart'; // 👈 Thêm import
 class ManualCheckResultScreen extends StatelessWidget {
   final String name;
   final String phone;
-  final List<Ticket> tickets;
+  //final List<Ticket> tickets;
 
   const ManualCheckResultScreen({
     super.key,
     required this.name,
     required this.phone,
-    required this.tickets,
+    //required this.tickets,
   });
 
   @override
@@ -51,7 +51,7 @@ class ManualCheckResultScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               /// Danh sách vé có thể click
-              ...tickets.map((ticket) => _buildTicketItem(context, ticket)).toList(),
+              //...tickets.map((ticket) => _buildTicketItem(context, ticket)).toList(),
             ],
           ),
         ),
@@ -59,44 +59,44 @@ class ManualCheckResultScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTicketItem(BuildContext context, Ticket ticket) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => TicketCheckDetailScreen(ticket: ticket),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: AppColors.primary.withOpacity(0.4)),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            QrImageView(
-              data: ticket.matchName + ticket.dateTime,
-              version: QrVersions.auto,
-              size: 60.0,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(ticket.matchName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text(ticket.dateTime, style: const TextStyle(color: AppColors.textSub)),
-                  Text('Số lượng vé: ${ticket.quantity}', style: const TextStyle(color: AppColors.textSub)),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //Widget _buildTicketItem(BuildContext context, Ticket ticket) {
+  //  return GestureDetector(
+  //    onTap: () {
+  //      Navigator.push(
+  //        context,
+  //        MaterialPageRoute(
+  //          builder: (_) => TicketCheckDetailScreen(ticket: ticket),
+  //        ),
+  //      );
+  //    },
+  //    child: Container(
+  //      margin: const EdgeInsets.only(bottom: 12),
+  //      padding: const EdgeInsets.all(8),
+  //      decoration: BoxDecoration(
+  //        border: Border.all(color: AppColors.primary.withOpacity(0.4)),
+  //        borderRadius: BorderRadius.circular(12),
+  //      ),
+  //      child: Row(
+  //        children: [
+  //          QrImageView(
+  //            data: ticket.matchName + ticket.dateTime,
+  //            version: QrVersions.auto,
+  //            size: 60.0,
+  //          ),
+  //          const SizedBox(width: 8),
+  //          Expanded(
+  //            child: Column(
+  //              crossAxisAlignment: CrossAxisAlignment.start,
+  //              children: [
+  //                Text(ticket.matchName, style: const TextStyle(fontWeight: FontWeight.bold)),
+  //                Text(ticket.dateTime, style: const TextStyle(color: AppColors.textSub)),
+  //                Text('Số lượng vé: ${ticket.quantity}', style: const TextStyle(color: AppColors.textSub)),
+  //              ],
+  //            ),
+  //          ),
+  //        ],
+  //      ),
+  //    ),
+  //  );
+  //}
 }
