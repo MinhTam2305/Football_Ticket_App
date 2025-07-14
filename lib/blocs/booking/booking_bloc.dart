@@ -15,8 +15,10 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           userId: event.userId,
           matchId: event.matchId,
           standId: event.standId,
+          quantity: event.quantity,
         );
-        await bookingRepository.createBooking(request);
+
+        await bookingRepository.createBooking(request, event.token); // ✅ thêm token
         emit(BookingSuccess());
       } catch (e) {
         emit(BookingFailure(message: e.toString()));

@@ -26,37 +26,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // await FirebaseMessaging.instance.requestPermission();
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-        BlocProvider(create: (_) => TicketBloc(repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'))),
-        //BlocProvider(create: (_) => TicketCheckBloc()),
-        BlocProvider(create: (_) => MatchBloc(MatchRepository())),
-        BlocProvider(create: (_) => TeamBloc(TeamRepository())),
-        BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
-        BlocProvider(
-          create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
-        ),
-         BlocProvider(
-           create: (_) => BookingBloc(
-             bookingRepository: BookingRepository(),
-           ),
-         ),
-        BlocProvider(
-          create: (_) => TicketBloc(
-            repository: TicketRepository(baseUrl: 'https://intership.hqsolutions.vn'),
-          ),
-        ),
-        BlocProvider(
-          create: (_) => PaymentBloc(
-            paymentRepository: PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn'),
-          ),
-        ),
-      ],
-      child: const MyApp(),
-    ),
+    MyApp(),
   );
 }
 
@@ -65,13 +36,39 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'FootBall Ticket App',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    final ticketRepository = TicketRepository(baseUrl: 'https://intership.hqsolutions.vn');
+    final paymentRepository = PaymentRepository(baseUrl: 'https://intership.hqsolutions.vn');
+    final bookingRepository = BookingRepository();
+
+    final ticketBloc = TicketBloc(repository: ticketRepository);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthBloc(AuthRepository())),
+        BlocProvider(create: (_) => ticketBloc), // ✔️ TicketBloc duy nhất
+        BlocProvider(create: (_) => MatchBloc(MatchRepository())),
+        BlocProvider(create: (_) => TeamBloc(TeamRepository())),
+        BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
+        BlocProvider(create: (_) => BookingDetailsBloc(BookingDetailsRepository())),
+        BlocProvider(create: (_) => BookingBloc(bookingRepository: bookingRepository)),
+
+        // ✔️ PaymentBloc cần truyền ticketBloc vào
+        BlocProvider(
+          create: (_) => PaymentBloc(
+            paymentRepository: paymentRepository,
+            bookingRepository: bookingRepository,
+            ticketBloc: ticketBloc,
+          ),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'FootBall Ticket App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        home: ToggleAuth(),
       ),
-      home: ToggleAuth(),
     );
   }
 }
