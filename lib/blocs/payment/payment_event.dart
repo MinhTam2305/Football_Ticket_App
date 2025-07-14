@@ -23,3 +23,22 @@ class CreatePaymentEvent extends PaymentEvent {
   @override
   List<Object> get props => [orderId, orderInfo, amount, returnUrl];
 }
+
+class CompleteBookingAndRefreshTicketsEvent extends PaymentEvent {
+  final String userId;
+  final String matchId;
+  final String standId;
+  final int quantity; // ⚠️ Đã thêm quantity
+  final String token;
+
+  const CompleteBookingAndRefreshTicketsEvent({
+    required this.userId,
+    required this.matchId,
+    required this.standId,
+    required this.quantity,
+    required this.token,
+  });
+
+  @override
+  List<Object?> get props => [userId, matchId, standId, quantity, token];
+}

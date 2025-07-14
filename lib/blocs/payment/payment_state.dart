@@ -11,6 +11,8 @@ class PaymentInitial extends PaymentState {}
 
 class PaymentLoading extends PaymentState {}
 
+class PaymentBookingComplete extends PaymentState {}
+
 class PaymentSuccess extends PaymentState {
   final String paymentUrl;
 

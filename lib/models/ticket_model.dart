@@ -19,13 +19,17 @@ class TicketModel {
 
   factory TicketModel.fromJson(Map<String, dynamic> json) {
     return TicketModel(
-      ticketId: json['ticketId'],
-      standName: json['standName'],
-      price: (json['price'] as num).toDouble(),
+      ticketId: json['ticketId'] ?? '',
+      standName: json['standName'] ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
       qrCode: json['qrCode'] ?? '',
-      issuedAt: DateTime.parse(json['issuedAt']),
-      ticketStatus: json['ticketStatus'],
-      statusChangedAt: DateTime.parse(json['statusChangedAt']),
+      issuedAt: json['issuedAt'] != null
+          ? DateTime.parse(json['issuedAt'])
+          : DateTime.now(),
+      ticketStatus: json['ticketStatus'] ?? '',
+      statusChangedAt: json['statusChangedAt'] != null
+          ? DateTime.parse(json['statusChangedAt'])
+          : DateTime.now(),
     );
   }
 }
