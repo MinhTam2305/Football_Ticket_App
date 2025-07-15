@@ -22,6 +22,7 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
       ..setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (request) {
           if (request.url.contains("result=success")) {
+            print("hello");
             Navigator.pop(context, true);
           } else if (request.url.contains("result=fail")) {
             Navigator.pop(context, false);

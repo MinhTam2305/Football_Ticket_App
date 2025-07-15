@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:football_ticket/models/booking_request_model.dart';
 
 class BookingRepository {
-  final String baseUrl = 'https://intership.hqsolutions.vn/api/BookingApi';
+  final String baseUrl = 'https://intership.hqsolutions.vn/api/BookingApi/booking';
 
   Future<void> createBooking(BookingRequestModel request, String token) async {
     final response = await http.post(
