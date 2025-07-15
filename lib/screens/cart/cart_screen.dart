@@ -166,12 +166,13 @@ class _CartScreenState extends State<CartScreen> {
           );
 
           if (result == true) {
-            context.read<BookingBloc>().add(
-              BookTicketEvent(
+            context.read<PaymentBloc>().add(
+              CompleteBookingAndRefreshTicketsEvent(
                 userId: widget.user.uid!,
                 matchId: widget.detailsMatch.idMatch,
                 standId: widget.stand.standId,
                 quantity: widget.quantity,
+                token: widget.user.token!,
               ),
             );
           } else {

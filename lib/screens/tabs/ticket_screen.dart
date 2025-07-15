@@ -66,12 +66,22 @@ class _TicketScreenState extends State<TicketScreen> {
                   final List<BookingTicket> bookingList =
                   selectedIndex == 0 ? state.unused : state.used;
 
-                  final ticketItems = bookingList
-                      .expand((booking) => booking.tickets.map((ticket) => {
-                    "booking": booking,
-                    "ticket": ticket,
-                  }))
-                      .toList();
+                  // ⚠️ Chỉ hiển thị các ticket có ticketStatus phù hợp với tab
+                  final ticketItems = bookingList.expand((booking) {
+                    final filteredTickets = booking.tickets.where((ticket) {
+                      final status = ticket.ticketStatus.toLowerCase();
+                      if (selectedIndex == 0) {
+                        return status == 'đã phát hành';
+                      } else {
+                        return status == 'đã ra sân';
+                      }
+                    }).map((ticket) => {
+                      "booking": booking,
+                      "ticket": ticket,
+                    });
+
+                    return filteredTickets;
+                  }).toList();
 
                   if (ticketItems.isEmpty) {
                     return const Center(child: Text("Không có vé nào."));
@@ -86,7 +96,6 @@ class _TicketScreenState extends State<TicketScreen> {
                       final ticket =
                       ticketItems[index]["ticket"] as TicketModel;
 
-                      /// 🔹 bao Container bằng InkWell để điều hướng
                       return InkWell(
                         borderRadius: BorderRadius.circular(12),
                         onTap: () {
@@ -116,8 +125,6 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
-
-  // ----------------- UI helpers -----------------
 
   Widget _buildTab() {
     return Container(

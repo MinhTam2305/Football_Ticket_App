@@ -13,15 +13,21 @@ class TicketBloc extends Bloc<TicketEvent, TicketState> {
 
       try {
         final data = await repository.fetchMyTickets(event.userId, event.token);
-        final now = DateTime.now();
 
-        final used = data
-            .where((booking) => booking.matchDateTime.isBefore(now))
-            .toList();
+        final used = <BookingTicket>[];
+        final unused = <BookingTicket>[];
 
-        final unused = data
-            .where((booking) => booking.matchDateTime.isAfter(now))
-            .toList();
+        for (var booking in data) {
+          final usedTickets = booking.tickets.where((t) => t.ticketStatus == 'Đã sử dụng' || t.ticketStatus == 'Đã vào sân' || t.ticketStatus == 'Đã ra sân').toList();
+          final unusedTickets = booking.tickets.where((t) => t.ticketStatus == 'Đã phát hành').toList();
+
+          if (usedTickets.isNotEmpty) {
+            used.add(booking.copyWith(tickets: usedTickets));
+          }
+          if (unusedTickets.isNotEmpty) {
+            unused.add(booking.copyWith(tickets: unusedTickets));
+          }
+        }
 
         emit(TicketLoaded(used: used, unused: unused));
       } catch (e) {
