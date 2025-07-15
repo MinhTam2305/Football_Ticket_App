@@ -65,7 +65,7 @@ class TicketDetailScreen extends StatelessWidget {
                   ],
                 ),
                 child: QrImageView(
-                  data: ticket.qrCode,
+                  data: ticket.ticketId,
                   version: QrVersions.auto,
                   size: 200.0,
                 ),

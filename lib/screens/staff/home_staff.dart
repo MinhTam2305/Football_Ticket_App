@@ -53,7 +53,7 @@ class _HomeStaffState extends State<HomeStaff> {
 
           _showDialogError(
             context,
-            state.error ?? "Không tìm thấy vé hoặc trận đấu đã kết thúc",
+            "Không tìm thấy vé hoặc trận đấu đã kết thúc",
           );
 
           print("Error: ${state.error}");
@@ -154,10 +154,7 @@ class _HomeStaffState extends State<HomeStaff> {
           ),
           child: Container(
             padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(10),
-            ),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -180,11 +177,11 @@ class _HomeStaffState extends State<HomeStaff> {
                       ),
                     ),
                     SizedBox(width: 5),
-                    Flexible(
+                    Expanded(
                       child: Text(
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
                         booking.matchName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
@@ -235,25 +232,26 @@ class _HomeStaffState extends State<HomeStaff> {
                 ),
                 SizedBox(height: 20),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                      ),
-                      onPressed: () async {
-                        Navigator.of(context).pop();
-                        setState(() {
-                          isDialogOpen = false;
-                          result = null;
-                        });
-                        await controller?.resumeCamera();
-                      },
-                      child: Text(
-                        "Show Details",
-                        style: TextStyle(color: AppColors.white),
-                      ),
-                    ),
+                    // TextButton(
+                    //   style: TextButton.styleFrom(
+                    //     backgroundColor: AppColors.primary,
+                    //   ),
+                    //   onPressed: () async {
+                    //     Navigator.of(context).pop();
+                    //     setState(() {
+                    //       isDialogOpen = false;
+                    //       result = null;
+                    //     });
+                    //     await controller?.resumeCamera();
+                    //   },
+                    //   child: Text(
+                    //     "Show Details",
+                    //     style: TextStyle(color: AppColors.white),
+                    //   ),
+                    // ),
                     TextButton(
                       style: TextButton.styleFrom(
                         backgroundColor: AppColors.primary,

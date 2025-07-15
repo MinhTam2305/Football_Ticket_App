@@ -28,94 +28,96 @@ class _ProfilePageState extends State<ProfilePage> {
           } else if (state is Logined && state.user != null) {
             return Scaffold(
               backgroundColor: AppColors.background,
-              body: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 80),
-                child: Stack(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 120),
-                      child: Lottie.asset("assets/Animation-Profile.json"),
-                    ),
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: 120,
-                          child: Card(
-                            elevation: 5,
-                            color: AppColors.white,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  state.user.name ?? "Unknow",
-                                  style: AppTextStyles.title1,
-                                ),
-                                Text(
-                                  state.user.phoneNumber ?? "Null",
-                                  style: AppTextStyles.body1,
-                                ),
-                              ],
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20, top: 80),
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 120),
+                        child: Lottie.asset("assets/Animation-Profile.json"),
+                      ),
+                      Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            height: 120,
+                            child: Card(
+                              elevation: 5,
+                              color: AppColors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    state.user.name ?? "Unknow",
+                                    style: AppTextStyles.title1,
+                                  ),
+                                  Text(
+                                    state.user.phoneNumber ?? "Null",
+                                    style: AppTextStyles.body1.copyWith(fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 250),
-                        ButtonCustom(
-                          text: "Edit Profile",
-                          opTap: () {},
-                          isLoading: false,
-                        ),
-                        SizedBox(height: 40),
-                        ButtonCustom(
-                          text: "Change Password",
-                          opTap: () async {
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        ChangpasswordPage(user: state.user),
-                              ),
-                            );
-
-                            if (result == true) {
-                              if (state.user.uid != null &&
-                                  state.user.token != null) {
-                                context.read<AuthBloc>().add(
-                                  GetUserById(
-                                    state.user.uid!,
-                                    state.user.token!,
-                                  ),
-                                );
-                              } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ToggleAuth(),
-                                  ),
-                                );
+                          SizedBox(height: 250),
+                          ButtonCustom(
+                            text: "Edit Profile",
+                            opTap: () {},
+                            isLoading: false,
+                          ),
+                          SizedBox(height: 40),
+                          ButtonCustom(
+                            text: "Change Password",
+                            opTap: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          ChangpasswordPage(user: state.user),
+                                ),
+                              );
+                
+                              if (result == true) {
+                                if (state.user.uid != null &&
+                                    state.user.token != null) {
+                                  context.read<AuthBloc>().add(
+                                    GetUserById(
+                                      state.user.uid!,
+                                      state.user.token!,
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ToggleAuth(),
+                                    ),
+                                  );
+                                }
                               }
-                            }
-                          },
-                          isLoading: false,
-                        ),
-                        SizedBox(height: 40),
-
-                        ButtonCustom(
-                          text: "Logout",
-                          opTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ToggleAuth(),
-                              ),
-                            );
-                          },
-                          isLoading: false,
-                        ),
-                      ],
-                    ),
-                  ],
+                            },
+                            isLoading: false,
+                          ),
+                          SizedBox(height: 40),
+                
+                          ButtonCustom(
+                            text: "Logout",
+                            opTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ToggleAuth(),
+                                ),
+                              );
+                            },
+                            isLoading: false,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
