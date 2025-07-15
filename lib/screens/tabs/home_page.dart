@@ -8,6 +8,8 @@ import 'package:football_ticket/blocs/match/match_state.dart';
 import 'package:football_ticket/blocs/match_details/match_details_bloc.dart';
 import 'package:football_ticket/blocs/match_details/match_details_event.dart';
 import 'package:football_ticket/blocs/match_details/match_details_state.dart';
+import 'package:football_ticket/blocs/notification/noti_bloc.dart';
+import 'package:football_ticket/blocs/notification/noti_event.dart';
 import 'package:football_ticket/blocs/team/team_bloc.dart';
 import 'package:football_ticket/blocs/team/team_event.dart';
 import 'package:football_ticket/blocs/team/team_state.dart';
@@ -62,6 +64,7 @@ class _HomePageState extends State<HomePage> {
                     Text("Hi ${user.name!}", style: AppTextStyles.title2),
                     GestureDetector(
                       onTap: () {
+                        context.read<NotiBloc>().add(LoadNotiEvent());
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -124,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
                           SizedBox(height: 5),
                           Row(
-                            children: [                            
+                            children: [
                               BlocBuilder<TeamBloc, TeamState>(
                                 builder: (context, state) {
                                   if (state is TeamLoading) {

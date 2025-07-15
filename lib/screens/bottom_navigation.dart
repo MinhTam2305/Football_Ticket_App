@@ -24,7 +24,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   late UserModel user;
   bool isUser = true;
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -36,13 +37,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
       isUser = false;
     }
 
-   
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -67,9 +70,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Xử lý khi người dùng nhấn vào thông báo (có thể điều hướng hoặc custom logic ở đây)
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
   }
 
   void _onItemTapped(int index) {
@@ -82,7 +83,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
   Widget build(BuildContext context) {
     List<Widget> _widgetOption = <Widget>[
       isUser ? HomePage() : HomeStaff(user: widget.user),
-      isUser ? TicketScreen(userId: widget.user.uid!, token: widget.user.token!) : ManualCheckTicketScreen(),
+      if (isUser) Center(child: Text("New")),
+      isUser
+          ? TicketScreen(userId: widget.user.uid!, token: widget.user.token!)
+          : ManualCheckTicketScreen(),
       isUser ? ProfilePage() : ProfilePage(),
     ];
     return Scaffold(
@@ -92,6 +96,10 @@ class _BottomNavigationState extends State<BottomNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.newspaper_rounded),
+            label: "News",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.confirmation_number_outlined),
@@ -105,6 +113,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         currentIndex: _currentPageIndex,
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.primary,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
