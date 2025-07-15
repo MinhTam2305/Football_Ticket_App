@@ -36,6 +36,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
       );
 
       final response = await paymentRepository.createPayment(request);
+      final paymentUrl = response.paymentUrl;
+
+
       emit(PaymentSuccess(response.paymentUrl));
     } catch (e) {
       emit(PaymentFailure(e.toString()));
@@ -54,6 +57,8 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         standId: event.standId,
         quantity: event.quantity, // ⚠️ quantity phải truyền vào đúng theo API yêu cầu
       );
+      
+      print(event.quantity);
 
       await bookingRepository.createBooking(bookingRequest, event.token);
 
