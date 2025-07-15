@@ -81,35 +81,57 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOption = <Widget>[
-      isUser ? HomePage() : HomeStaff(user: widget.user),
-      if (isUser) Center(child: Text("New")),
-      isUser
-          ? TicketScreen(userId: widget.user.uid!, token: widget.user.token!)
-          : ManualCheckTicketScreen(),
-      isUser ? ProfilePage() : ProfilePage(),
-    ];
+    List<Widget> _widgetOption = isUser
+        ? [
+            HomePage(),
+            Center(child: Text("New")),
+            TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
+            ProfilePage(),
+          ]
+        : [
+            HomeStaff(user: widget.user),
+            ManualCheckTicketScreen(),
+            ProfilePage(),
+          ];
+
+    List<BottomNavigationBarItem> _navItems = isUser
+        ? [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper_rounded),
+              label: "News",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number_outlined),
+              label: "Ticket",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.person),
+              label: "Profile",
+            ),
+          ]
+        : [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number_outlined),
+              label: "Ticket",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.person),
+              label: "Profile",
+            ),
+          ];
+
     return Scaffold(
       body: IndexedStack(index: _currentPageIndex, children: _widgetOption),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper_rounded),
-            label: "News",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number_outlined),
-            label: "Ticket",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.person),
-            label: "Profile",
-          ),
-        ],
+        items: _navItems,
         currentIndex: _currentPageIndex,
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.primary,
