@@ -24,7 +24,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
   late UserModel user;
   bool isUser = true;
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -36,13 +37,15 @@ class _BottomNavigationState extends State<BottomNavigation> {
       isUser = false;
     }
 
-   
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
-    final InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -67,9 +70,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      // Xử lý khi người dùng nhấn vào thông báo (có thể điều hướng hoặc custom logic ở đây)
-    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
   }
 
   void _onItemTapped(int index) {
@@ -80,31 +81,61 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOption = <Widget>[
-      isUser ? HomePage() : HomeStaff(user: widget.user),
-      isUser ? TicketScreen(userId: widget.user.uid!, token: widget.user.token!) : ManualCheckTicketScreen(),
-      isUser ? ProfilePage() : ProfilePage(),
-    ];
+    List<Widget> _widgetOption = isUser
+        ? [
+            HomePage(),
+            Center(child: Text("New")),
+            TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
+            ProfilePage(),
+          ]
+        : [
+            HomeStaff(user: widget.user),
+            ManualCheckTicketScreen(),
+            ProfilePage(),
+          ];
+
+    List<BottomNavigationBarItem> _navItems = isUser
+        ? [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper_rounded),
+              label: "News",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number_outlined),
+              label: "Ticket",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.person),
+              label: "Profile",
+            ),
+          ]
+        : [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.confirmation_number_outlined),
+              label: "Ticket",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(FontAwesomeIcons.person),
+              label: "Profile",
+            ),
+          ];
+
     return Scaffold(
       body: IndexedStack(index: _currentPageIndex, children: _widgetOption),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number_outlined),
-            label: "Ticket",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.person),
-            label: "Profile",
-          ),
-        ],
+        items: _navItems,
         currentIndex: _currentPageIndex,
         backgroundColor: AppColors.background,
         selectedItemColor: AppColors.primary,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
