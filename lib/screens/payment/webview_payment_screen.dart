@@ -22,12 +22,20 @@ class _WebViewPaymentScreenState extends State<WebViewPaymentScreen> {
       ..setNavigationDelegate(NavigationDelegate(
         onNavigationRequest: (request) {
           if (request.url.contains("result=success")) {
-            print("hello");
             Navigator.pop(context, true);
           } else if (request.url.contains("result=fail")) {
             Navigator.pop(context, false);
           }
           return NavigationDecision.navigate;
+        },
+        onPageFinished: (url) async {
+          // Đọc nội dung trang để kiểm tra chữ ký hợp lệ
+          final html = await _controller.runJavaScriptReturningResult(
+            "document.body.innerText"
+          );
+          if (html != null && html.toString().contains("Chữ ký hợp lệ")) {
+            Navigator.pop(context, true);
+          }
         },
       ))
       ..loadRequest(Uri.parse(widget.paymentUrl));

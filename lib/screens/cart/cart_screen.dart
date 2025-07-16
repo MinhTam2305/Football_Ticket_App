@@ -11,6 +11,7 @@ import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/payment/webview_payment_screen.dart';
+import 'package:football_ticket/screens/cart/cart_successful_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final MatchDetailsModel detailsMatch;
@@ -79,33 +80,67 @@ class _CartScreenState extends State<CartScreen> {
                           children: [
                             Column(
                               children: [
-                                Image.network(widget.detailsMatch.match.homeTeam.logo, width: 50, height: 40),
+                                Image.network(
+                                  widget.detailsMatch.match.homeTeam.logo,
+                                  width: 50,
+                                  height: 40,
+                                ),
                                 const SizedBox(height: 5),
-                                Text(widget.detailsMatch.match.homeTeam.teamName, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                                Text(
+                                  widget.detailsMatch.match.homeTeam.teamName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ],
                             ),
-                            const Text("VS", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            const Text(
+                              "VS",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                             Column(
                               children: [
-                                Image.network(widget.detailsMatch.match.awayTeam.logo, width: 50, height: 40),
+                                Image.network(
+                                  widget.detailsMatch.match.awayTeam.logo,
+                                  width: 50,
+                                  height: 40,
+                                ),
                                 const SizedBox(height: 5),
-                                Text(widget.detailsMatch.match.awayTeam.teamName, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                                Text(
+                                  widget.detailsMatch.match.awayTeam.teamName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ],
                             ),
                           ],
                         ),
                         const SizedBox(height: 12),
-                        _infoRow(Icons.access_time, widget.detailsMatch.match.matchTime),
+                        _infoRow(
+                          Icons.access_time,
+                          widget.detailsMatch.match.matchTime,
+                        ),
                         const SizedBox(height: 6),
                         _infoRow(Icons.location_on_outlined, "Go Dau"),
                         const SizedBox(height: 6),
                         _plainText("Stand: ${widget.stand.standName}"),
                         const SizedBox(height: 4),
-                        _plainText("Remaining Tickets: ${widget.stand.availabelTickets}"),
+                        _plainText(
+                          "Remaining Tickets: ${widget.stand.availabelTickets}",
+                        ),
                         const SizedBox(height: 10),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.asset("assets/images/stadium.png", fit: BoxFit.cover),
+                          child: Image.asset(
+                            "assets/images/stadium.png",
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ],
                     ),
@@ -113,7 +148,10 @@ class _CartScreenState extends State<CartScreen> {
                   const SizedBox(height: 20),
                   _infoRowPlain("Quantity:", widget.quantity.toString()),
                   const SizedBox(height: 8),
-                  _infoRowPlain("Price:", "${widget.totlePrice.toStringAsFixed(0)}đ"),
+                  _infoRowPlain(
+                    "Price:",
+                    "${widget.totlePrice.toStringAsFixed(0)}đ",
+                  ),
                 ],
               ),
             ),
@@ -132,7 +170,10 @@ class _CartScreenState extends State<CartScreen> {
       children: [
         Icon(icon, size: 18, color: AppColors.textSub),
         const SizedBox(width: 8),
-        Text(value, style: const TextStyle(color: AppColors.textSub, fontSize: 14)),
+        Text(
+          value,
+          style: const TextStyle(color: AppColors.textSub, fontSize: 14),
+        ),
       ],
     );
   }
@@ -140,7 +181,10 @@ class _CartScreenState extends State<CartScreen> {
   Widget _plainText(String text) {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Text(text, style: const TextStyle(color: AppColors.textSub, fontSize: 14)),
+      child: Text(
+        text,
+        style: const TextStyle(color: AppColors.textSub, fontSize: 14),
+      ),
     );
   }
 
@@ -148,8 +192,18 @@ class _CartScreenState extends State<CartScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textMain, fontSize: 16)),
-        Text(value, style: const TextStyle(color: AppColors.textMain, fontSize: 16, fontWeight: FontWeight.bold)),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.textMain, fontSize: 16),
+        ),
+        Text(
+          value,
+          style: const TextStyle(
+            color: AppColors.textMain,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ],
     );
   }
@@ -161,11 +215,19 @@ class _CartScreenState extends State<CartScreen> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => WebViewPaymentScreen(paymentUrl: state.paymentUrl),
+              builder:
+                  (_) => WebViewPaymentScreen(paymentUrl: state.paymentUrl),
             ),
           );
-
           if (result == true) {
+            await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) =>
+                        CartSuccessfulScreen(matchModel: widget.detailsMatch),
+              ),
+            );
             context.read<PaymentBloc>().add(
               CompleteBookingAndRefreshTicketsEvent(
                 userId: widget.user.uid!,
@@ -182,7 +244,7 @@ class _CartScreenState extends State<CartScreen> {
           }
         } else if (state is PaymentFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Payment failed: ${state.message}")),
+            SnackBar(content: Text("Payment failed: " + state.message)),
           );
         }
       },
@@ -197,21 +259,27 @@ class _CartScreenState extends State<CartScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            onPressed: state is PaymentLoading
-                ? null
-                : () {
-              context.read<PaymentBloc>().add(
-                CreatePaymentEvent(
-                  orderId: '${DateTime.now().millisecondsSinceEpoch}',
-                  orderInfo: 'ThanhToanVe',
-                  amount: widget.totlePrice.toStringAsFixed(0),
-                  returnUrl: 'https://intership.hqsolutions.vn/api/Payment/onepay-return',
-                ),
-              );
-            },
-            child: state is PaymentLoading
-                ? const CircularProgressIndicator(color: Colors.white)
-                : Text("Payment", style: AppTextStyles.button.copyWith(color: Colors.white)),
+            onPressed:
+                state is PaymentLoading
+                    ? null
+                    : () {
+                      context.read<PaymentBloc>().add(
+                        CreatePaymentEvent(
+                          orderId: '${DateTime.now().millisecondsSinceEpoch}',
+                          orderInfo: 'ThanhToanVe',
+                          amount: widget.totlePrice.toStringAsFixed(0),
+                          returnUrl:
+                              'https://intership.hqsolutions.vn/api/Payment/onepay-return',
+                        ),
+                      );
+                    },
+            child:
+                state is PaymentLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                      "Payment",
+                      style: AppTextStyles.button.copyWith(color: Colors.white),
+                    ),
           ),
         );
       },
