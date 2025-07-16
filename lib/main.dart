@@ -11,6 +11,7 @@ import 'package:football_ticket/blocs/ticket/ticket_bloc.dart';
 import 'package:football_ticket/blocs/ticket_check/ticket_check_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/payment/payment_bloc.dart';
+import 'package:football_ticket/blocs/news/news_bloc.dart'; // ✅ NEW
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/repositories/auth_repository.dart';
 import 'package:football_ticket/repositories/booking_details_repository.dart';
@@ -21,13 +22,14 @@ import 'package:football_ticket/repositories/team_repository.dart';
 import 'package:football_ticket/repositories/booking_repository.dart';
 import 'package:football_ticket/repositories/payment_repository.dart';
 import 'package:football_ticket/repositories/ticket_repository.dart';
+import 'package:football_ticket/repositories/news_repository.dart'; // ✅ NEW
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -42,6 +44,7 @@ class MyApp extends StatelessWidget {
       baseUrl: 'https://intership.hqsolutions.vn',
     );
     final bookingRepository = BookingRepository();
+    final newsRepository = NewsRepository(); // ✅ NEW
 
     final ticketBloc = TicketBloc(repository: ticketRepository);
 
@@ -52,23 +55,20 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
-        BlocProvider(
-          create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
-        ),
-        BlocProvider(
-          create: (_) => BookingBloc(bookingRepository: bookingRepository),
-        ),
+        BlocProvider(create: (_) => BookingDetailsBloc(BookingDetailsRepository())),
+        BlocProvider(create: (_) => BookingBloc(bookingRepository: bookingRepository)),
         BlocProvider(create: (_) => NotiBloc(NotiRepository())),
 
         // ✔️ PaymentBloc cần truyền ticketBloc vào
         BlocProvider(
-          create:
-              (_) => PaymentBloc(
-                paymentRepository: paymentRepository,
-                bookingRepository: bookingRepository,
-                ticketBloc: ticketBloc,
-              ),
+          create: (_) => PaymentBloc(
+            paymentRepository: paymentRepository,
+            bookingRepository: bookingRepository,
+            ticketBloc: ticketBloc,
+          ),
         ),
+
+        BlocProvider(create: (_) => NewsBloc(newsRepository)), // ✅ NEW
       ],
       child: MaterialApp(
         title: 'FootBall Ticket App',
