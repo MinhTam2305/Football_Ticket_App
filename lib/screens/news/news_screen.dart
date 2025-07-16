@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import '../../blocs/news/news_bloc.dart';
-import '../../blocs/news/news_event.dart';
-import '../../blocs/news/news_state.dart';
-import '../../models/news_model.dart';
-import '../../core/constants/colors.dart';
-import 'news_detail_screen.dart';
+import '/blocs/news_match/news_match_bloc.dart';
+import '/blocs/news_match/news_match_event.dart';
+import '/blocs/news_match/news_match_state.dart';
+import '/models/news_match_model.dart';
+import '/screens/news/news_detail_screen.dart';
+import '/repositories/news_match_detail_repository.dart';
+import '/core/constants/colors.dart';
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -19,7 +20,7 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<NewsBloc>().add(FetchNewsEvent());
+    context.read<NewsMatchBloc>().add(FetchNewsMatchEvent());
   }
 
   @override
@@ -28,81 +29,140 @@ class _NewsScreenState extends State<NewsScreen> {
       backgroundColor: AppColors.secondary_bg,
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: const Text('News', style: TextStyle(color: Colors.white)),
         centerTitle: true,
+        title: const Text("News", style: TextStyle(color: Colors.white)),
       ),
-      body: BlocBuilder<NewsBloc, NewsState>(
+      body: BlocBuilder<NewsMatchBloc, NewsMatchState>(
         builder: (context, state) {
-          if (state is NewsLoading) {
+          if (state is NewsMatchLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is NewsLoaded) {
-            final grouped = _groupByDate(state.newsList);
-            return ListView(
-              padding: const EdgeInsets.all(16),
-              children: grouped.entries.map((entry) {
+          } else if (state is NewsMatchLoaded) {
+            final groupedMatches = _groupMatchesByDate(state.newsMatches);
+
+            return ListView.builder(
+              itemCount: groupedMatches.keys.length,
+              itemBuilder: (context, index) {
+                String dateKey = groupedMatches.keys.elementAt(index);
+                List<NewsMatchModel> matches = groupedMatches[dateKey]!;
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(entry.key, style: AppTextStyles.title2),
-                    const SizedBox(height: 10),
-                    ...entry.value.map((item) => _buildItem(context, item)),
-                    const SizedBox(height: 20),
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Text(
+                        dateKey,
+                        style: AppTextStyles.body1,
+                      ),
+                    ),
+                    ...matches.map((match) => _buildMatchCard(match)).toList(),
                   ],
                 );
-              }).toList(),
+              },
             );
-          } else if (state is NewsError) {
-            return Center(child: Text(state.message));
           } else {
-            return const SizedBox();
+            return const Center(child: Text("Failed to load news_match"));
           }
         },
       ),
     );
   }
 
-  Widget _buildItem(BuildContext context, NewsItem item) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: item.imageUrl != null
-            ? Image.network(item.imageUrl!, width: 60, height: 60, fit: BoxFit.cover)
-            : const Icon(Icons.image_not_supported),
-        title: Text(item.title, style: AppTextStyles.body1),
-        subtitle: Text(DateFormat('dd/MM/yyyy HH:mm').format(item.createdAt),
-            style: AppTextStyles.caption),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.secondary),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => NewsDetailScreen(news: item)),
-            );
-          },
-          child: const Text("View", style: TextStyle(color: Colors.white)),
+  Widget _buildMatchCard(NewsMatchModel match) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => NewsDetailScreen(
+              newsMatch: match,
+              repository: NewsMatchDetailRepository(), // ✅ THÊM DÒNG NÀY
+            ),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 5,
+              offset: Offset(2, 2),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            // Logo home team
+            Image.network(
+              'https://intership.hqsolutions.vn${match.homeTeamLogo}',
+              width: 50,
+              height: 50,
+              errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.image_not_supported),
+            ),
+            const SizedBox(width: 8),
+            // VS info
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${match.homeTeamName} ${match.homeScore} - ${match.awayScore} ${match.awayTeamName}",
+                    style: AppTextStyles.body1,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    match.matchDate,
+                    style: AppTextStyles.caption,
+                  ),
+                ],
+              ),
+            ),
+            // Logo away team
+            Image.network(
+              'https://intership.hqsolutions.vn${match.awayTeamLogo}',
+              width: 50,
+              height: 50,
+              errorBuilder: (context, error, stackTrace) =>
+              const Icon(Icons.image_not_supported),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Map<String, List<NewsItem>> _groupByDate(List<NewsItem> list) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(const Duration(days: 1));
+  Map<String, List<NewsMatchModel>> _groupMatchesByDate(
+      List<NewsMatchModel> matches) {
+    Map<String, List<NewsMatchModel>> grouped = {};
 
-    Map<String, List<NewsItem>> grouped = {};
-    for (var item in list) {
-      final date = DateTime(item.createdAt.year, item.createdAt.month, item.createdAt.day);
+    for (var match in matches) {
+      final date = DateFormat("dd/MM/yyyy").parse(match.matchDate);
+      final today = DateTime.now();
+      final yesterday = today.subtract(const Duration(days: 1));
+
       String key;
-      if (date == today) {
-        key = 'Today';
-      } else if (date == yesterday) {
-        key = 'Yesterday';
+      if (_isSameDay(date, today)) {
+        key = "Today";
+      } else if (_isSameDay(date, yesterday)) {
+        key = "Yesterday";
       } else {
-        key = DateFormat('dd/MM').format(date);
+        key = DateFormat("dd/MM").format(date);
       }
-      grouped.putIfAbsent(key, () => []).add(item);
+
+      grouped.putIfAbsent(key, () => []).add(match);
     }
+
     return grouped;
+  }
+
+  bool _isSameDay(DateTime d1, DateTime d2) {
+    return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
   }
 }
