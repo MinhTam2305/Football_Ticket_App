@@ -84,7 +84,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     List<Widget> _widgetOption = isUser
         ? [
       HomePage(),
-      NewsScreen(), // ✅ THAY VÌ Center(child: Text("New"))
+      NewsScreen(), 
       TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
       ProfilePage(),
     ]
