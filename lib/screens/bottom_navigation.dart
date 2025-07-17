@@ -4,7 +4,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
-import 'package:football_ticket/screens/auth/change_password_from_forget.dart';
 import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
 import 'package:football_ticket/screens/tabs/home_page.dart';
 import 'package:football_ticket/screens/staff/home_staff.dart';
