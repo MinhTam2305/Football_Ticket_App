@@ -71,17 +71,21 @@ class _LoginState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is OtpSent) {
-          Navigator.of(context).pop();
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => OtpScreen(
-                    verificationId: state.verificationId,
-                    isForgetPassword: true,
-                  ),
-            ),
-          );
+          if (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+          Future.delayed(Duration.zero, () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => OtpScreen(
+                      verificationId: state.verificationId,
+                      isForgetPassword: true,
+                    ),
+              ),
+            );
+          });
         } else if (state is Logined) {
           Navigator.of(context).pop();
           String? deviceToken = await FirebaseMessaging.instance.getToken();
@@ -111,13 +115,7 @@ class _LoginState extends State<LoginScreen> {
         backgroundColor: AppColors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding:
-                kIsWeb
-                    ? EdgeInsets.symmetric(
-                      horizontal: MediaQuery.of(context).size.width * 0.4,
-                      vertical: 100,
-                    )
-                    : EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 80),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 50, bottom: 80),
             child: Column(
               // crossAxisAlignment: CrossAxisAlignment.center,
               children: [
