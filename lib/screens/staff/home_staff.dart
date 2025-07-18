@@ -8,7 +8,7 @@ import 'package:football_ticket/blocs/booking_details/booking_details_state.dart
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/qrScanResponseModel.dart';
 import 'package:football_ticket/models/user_model.dart';
-import 'package:football_ticket/screens/staff/manual_check_ticket_screen.dart';
+import 'package:football_ticket/screens/staff/manual_ticket_lookup_screen.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class HomeStaff extends StatefulWidget {
@@ -73,7 +73,7 @@ class _HomeStaffState extends State<HomeStaff> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ManualCheckTicketScreen(),
+                      builder: (context) => ManualTicketLookupScreen(),
                     ),
                   );
                 },
