@@ -8,11 +8,11 @@ import 'package:football_ticket/blocs/match_details/match_details_bloc.dart';
 import 'package:football_ticket/blocs/notification/noti_bloc.dart';
 import 'package:football_ticket/blocs/team/team_bloc.dart';
 import 'package:football_ticket/blocs/ticket/ticket_bloc.dart';
-import 'package:football_ticket/blocs/ticket_check/ticket_check_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/payment/payment_bloc.dart';
 import 'package:football_ticket/blocs/news_match/news_match_bloc.dart'; // ✅ NEW
 import 'package:football_ticket/blocs/news_detail/news_match_detail_bloc.dart'; // ✅ NEW
+import 'package:football_ticket/blocs/manual_ticket_lookup/manual_ticket_lookup_bloc.dart'; // ✅ ADD
 import 'package:football_ticket/core/services/auth/toggle_auth.dart';
 import 'package:football_ticket/repositories/auth_repository.dart';
 import 'package:football_ticket/repositories/booking_details_repository.dart';
@@ -25,6 +25,7 @@ import 'package:football_ticket/repositories/payment_repository.dart';
 import 'package:football_ticket/repositories/ticket_repository.dart';
 import 'package:football_ticket/repositories/news_match_repository.dart'; // ✅ NEW
 import 'package:football_ticket/repositories/news_match_detail_repository.dart'; // ✅ NEW
+import 'package:football_ticket/repositories/manual_ticket_lookup_repository.dart'; // ✅ ADD
 import 'firebase_options.dart';
 
 void main() async {
@@ -46,23 +47,26 @@ class MyApp extends StatelessWidget {
       baseUrl: 'https://intership.hqsolutions.vn',
     );
     final bookingRepository = BookingRepository();
-    final newsMatchRepository = NewsMatchRepository(baseUrl: 'https://intership.hqsolutions.vn'); // ✅ NEW
-    final newsMatchDetailRepository = NewsMatchDetailRepository(); // ✅ NEW
+    final newsMatchRepository = NewsMatchRepository(baseUrl: 'https://intership.hqsolutions.vn'); // ✅
+    final newsMatchDetailRepository = NewsMatchDetailRepository(); // ✅
+    final manualLookupRepository = ManualTicketLookupRepository( // ✅ ADD
+      baseUrl: 'https://intership.hqsolutions.vn',
+    );
     final ticketBloc = TicketBloc(repository: ticketRepository);
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => AuthBloc(AuthRepository())),
-        BlocProvider(create: (_) => ticketBloc), // ✔️ TicketBloc duy nhất
+        BlocProvider(create: (_) => ticketBloc),
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
         BlocProvider(create: (_) => BookingDetailsBloc(BookingDetailsRepository())),
         BlocProvider(create: (_) => BookingBloc(bookingRepository: bookingRepository)),
         BlocProvider(create: (_) => NotiBloc(NotiRepository())),
-        BlocProvider(create: (_) => NewsMatchDetailBloc(repository: newsMatchDetailRepository)), // ✅ NEW
+        BlocProvider(create: (_) => NewsMatchBloc(repository: newsMatchRepository)), // ✅
+        BlocProvider(create: (_) => NewsMatchDetailBloc(repository: newsMatchDetailRepository)), // ✅
 
-        // ✔️ PaymentBloc cần truyền ticketBloc vào
         BlocProvider(
           create: (_) => PaymentBloc(
             paymentRepository: paymentRepository,
@@ -71,7 +75,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
-        BlocProvider(create: (_) => NewsMatchBloc(repository: newsMatchRepository)), // ✅ NEW
+        BlocProvider( // ✅ ADD bloc tra cứu vé
+          create: (_) => ManualTicketLookupBloc(repository: manualLookupRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'FootBall Ticket App',
