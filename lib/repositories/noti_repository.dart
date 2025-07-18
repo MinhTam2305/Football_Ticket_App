@@ -9,7 +9,11 @@ class NotiRepository {
       final response = await _dio.get('newsApi');
       if (response.statusCode == 200) {
         List<dynamic> data = response.data['items'];
-        return data.map((item) => NoticeModel.fromJson(item)).toList();
+        final List<NoticeModel> filteredMatches = data
+            .where((e) => e['status'] == true)
+            .map((e) => NoticeModel.fromJson(e))
+            .toList();
+        return filteredMatches;
       } else {
         throw Exception('Failed to load notices: ${response.statusCode}');
       }
