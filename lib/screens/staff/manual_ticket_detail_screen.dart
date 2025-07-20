@@ -33,7 +33,7 @@ class ManualTicketDetailScreen extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerLeft, // ✅ Căn trái
           child: Text(
-            "Check ticket",
+            "Check Ticket",
             style: TextStyle(
               color: AppColors.textMain,
               fontWeight: FontWeight.bold,
