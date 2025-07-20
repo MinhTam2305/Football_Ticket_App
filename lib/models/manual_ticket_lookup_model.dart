@@ -50,8 +50,8 @@ class Stand {
     return Stand(
       standId: json['standId'],
       name: json['name'],
-      capacity: json['capacity'],
-      price: json['price'],
+      capacity: (json['capacity'] as num).toInt(), // ✅ Sửa chỗ này
+      price: (json['price'] as num).toInt(),       // ✅ Và chỗ này nếu lỗi
     );
   }
 }
