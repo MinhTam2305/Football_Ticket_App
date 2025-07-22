@@ -26,11 +26,18 @@ class _NewsScreenState extends State<NewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.secondary_bg,
+      backgroundColor: AppColors.background, // ✅ sửa lại màu nền chuẩn
       appBar: AppBar(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.background,
         centerTitle: true,
-        title: const Text("News", style: TextStyle(color: Colors.white)),
+        title: const Text(
+          "News",
+          style: TextStyle(
+            fontSize: 24,
+            color: AppColors.textMain,
+            fontWeight: FontWeight.bold, // ✅ Cho đậm nếu muốn nổi bật hơn
+          ),
+        ),
       ),
       body: BlocBuilder<NewsMatchBloc, NewsMatchState>(
         builder: (context, state) {
@@ -49,8 +56,7 @@ class _NewsScreenState extends State<NewsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Text(
                         dateKey,
                         style: AppTextStyles.body1,
@@ -77,7 +83,7 @@ class _NewsScreenState extends State<NewsScreen> {
           MaterialPageRoute(
             builder: (_) => NewsDetailScreen(
               newsMatch: match,
-              repository: NewsMatchDetailRepository(), // ✅ THÊM DÒNG NÀY
+              repository: NewsMatchDetailRepository(),
             ),
           ),
         );
