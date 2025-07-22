@@ -5,6 +5,7 @@ import 'package:football_ticket/blocs/news_detail/news_match_detail_event.dart';
 import 'package:football_ticket/blocs/news_detail/news_match_detail_state.dart';
 import 'package:football_ticket/models/news_match_model.dart';
 import 'package:football_ticket/repositories/news_match_detail_repository.dart';
+import 'package:football_ticket/core/constants/colors.dart';
 
 class NewsDetailScreen extends StatelessWidget {
   final NewsMatchModel newsMatch;
@@ -22,8 +23,17 @@ class NewsDetailScreen extends StatelessWidget {
       create: (context) => NewsMatchDetailBloc(repository: repository)
         ..add(FetchNewsMatchDetail(matchId: newsMatch.matchId)),
       child: Scaffold(
+        backgroundColor: AppColors.background, // ✅ Màu nền chỉnh theo colors.dart
         appBar: AppBar(
-          title: const Text("Chi tiết tin tức"),
+          backgroundColor: AppColors.background,
+          centerTitle: true, // ✅ Căn giữa tiêu đề
+          title: const Text(
+            "News Detail",
+            style: TextStyle(
+              fontWeight: FontWeight.bold, // ✅ Tô đậm tiêu đề
+              color: AppColors.textMain,
+            ),
+          ),
         ),
         body: BlocBuilder<NewsMatchDetailBloc, NewsMatchDetailState>(
           builder: (context, state) {
@@ -52,7 +62,9 @@ class NewsDetailScreen extends StatelessWidget {
                             Text(
                               match.homeTeamName,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -75,7 +87,9 @@ class NewsDetailScreen extends StatelessWidget {
                             Text(
                               match.awayTeamName,
                               style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -95,7 +109,9 @@ class NewsDetailScreen extends StatelessWidget {
                           const Text(
                             "Danh sách ghi bàn:",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           if (match.homeTeamGoals.isEmpty &&
