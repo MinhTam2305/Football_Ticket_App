@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:football_ticket/models/accessory_model.dart';
 import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/match_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
@@ -17,21 +18,37 @@ class MatchDetailsRepository {
       );
       if (response.statusCode == 200) {
         final data = response.data['data'];
-        final matchId = data['matchId'];
-        MatchModel match = await _matchRepo.getMatchById(matchId);
-        final List<dynamic> standListJson = data['stands'];
 
+        // Lấy match cơ bản
+        final matchId = (data['matchId'] ?? idMatch).toString();
+        final MatchModel match = await _matchRepo.getMatchById(matchId);
+
+        // Stands
+        final List standListJson = (data['stands'] ?? []) as List;
         final List<StandModel> standList =
-            standListJson
-                .map((standJson) => StandModel.fromJson(standJson))
+            standListJson.map((e) => StandModel.fromJson(e)).toList();
+
+        // Map image + Google Maps url
+        final String? mapImageUrl =
+            (data['mapImageUrl'] ?? data['map_image_url'])?.toString();
+        final String? mapUrl = (data['mapUrl'] ?? data['map_url'])?.toString();
+
+        // Accessories
+        final List accListJson = (data['accessories'] ?? []) as List;
+        final accessories =
+            accListJson
+                .map(
+                  (e) => AccessoryModel.fromJson(Map<String, dynamic>.from(e)),
+                )
                 .toList();
-        MatchDetailsModel matchDetails = MatchDetailsModel(
+        return MatchDetailsModel(
           idMatch: idMatch,
           match: match,
           stand: standList,
+          mapImageUrl: mapImageUrl,
+          mapUrl: mapUrl,
+          accessories: accessories,
         );
-
-        return matchDetails;
       } else {
         throw Exception("Error get match details");
       }

@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/screens/staff/manual_ticket_lookup_screen.dart';
+import 'package:football_ticket/screens/tabs/accessory_page.dart';
 import 'package:football_ticket/screens/tabs/home_page.dart';
 import 'package:football_ticket/screens/staff/home_staff.dart';
 import 'package:football_ticket/screens/tabs/profile_page.dart';
@@ -25,7 +26,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
   bool isUser = true;
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -38,14 +39,14 @@ class _BottomNavigationState extends State<BottomNavigation> {
     }
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsIOS =
-    DarwinInitializationSettings();
+        DarwinInitializationSettings();
     final InitializationSettings initializationSettings =
-    InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
+        InitializationSettings(
+          android: initializationSettingsAndroid,
+          iOS: initializationSettingsIOS,
+        );
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
@@ -81,52 +82,59 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _widgetOption = isUser
-        ? [
-      HomePage(),
-      NewsScreen(), 
-      TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
-      ProfilePage(),
-    ]
-        : [
-      HomeStaff(user: widget.user),
-      ManualTicketLookupScreen(),
-      ProfilePage(),
-    ];
+    List<Widget> _widgetOption =
+        isUser
+            ? [
+              HomePage(),
+              AccessoryPage(),
+              NewsScreen(),
+              TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
+              ProfilePage(),
+            ]
+            : [
+              HomeStaff(user: widget.user),
+              ManualTicketLookupScreen(),
+              ProfilePage(),
+            ];
 
-    List<BottomNavigationBarItem> _navItems = isUser
-        ? [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home_outlined),
-        label: "Home",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.newspaper_rounded),
-        label: "News",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.confirmation_number_outlined),
-        label: "Ticket",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(FontAwesomeIcons.person),
-        label: "Profile",
-      ),
-    ]
-        : [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.home_outlined),
-        label: "Home",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.confirmation_number_outlined),
-        label: "Ticket",
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(FontAwesomeIcons.person),
-        label: "Profile",
-      ),
-    ];
+    List<BottomNavigationBarItem> _navItems =
+        isUser
+            ? [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.shopping_bag_outlined),
+                label: "Accessory",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.newspaper_rounded),
+                label: "News",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.confirmation_number_outlined),
+                label: "Ticket",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.person),
+                label: "Profile",
+              ),
+            ]
+            : [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.confirmation_number_outlined),
+                label: "Ticket",
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.person),
+                label: "Profile",
+              ),
+            ];
 
     return Scaffold(
       body: IndexedStack(index: _currentPageIndex, children: _widgetOption),
