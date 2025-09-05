@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:football_ticket/models/cart_item_model.dart';
+import 'package:football_ticket/services/cart_service.dart';
+import 'package:football_ticket/widgets/cart_floating_button.dart';
+import 'package:football_ticket/models/user_model.dart';
+import 'package:football_ticket/screens/cart/cart_screen.dart';
 
 /// ====== MODELS ======
 
@@ -23,10 +28,12 @@ class AccessoryPage extends StatefulWidget {
     super.key,
     this.categories = const ['Áo đấu', 'Item', 'Item','Áo đấu', 'Item', 'Item','Áo đấu', 'Item', 'Item'],
     this.products = const [],
+    required this.user,
   });
 
   final List<String> categories;
   final List<Product> products;
+  final UserModel user;
 
   @override
   State<AccessoryPage> createState() => _AccessoryScreenState();
@@ -34,12 +41,47 @@ class AccessoryPage extends StatefulWidget {
 
 class _AccessoryScreenState extends State<AccessoryPage> {
   int _selectedCategory = 0;
+  final CartService _cartService = CartService();
 
   // Dummy data để xem giao diện (sau này bạn truyền từ Firestore/API vào prop `products`)
   List<Product> get _displayProducts =>
       (widget.products.isEmpty ? _mockProducts : widget.products)
           .where((p) => _selectedCategory == 0 ? true : true) // filter sau
           .toList();
+
+  void _addToCart(Product product) {
+    final cartItem = CartItem(
+      id: product.id,
+      type: CartItemType.accessory,
+      title: product.name,
+      subtitle: 'Phụ kiện',
+      imageUrl: product.imageUrl,
+      price: product.price.toDouble(),
+      quantity: 1,
+    );
+    
+    _cartService.addItem(cartItem);
+    
+    // Hiển thị thông báo
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã thêm ${product.name} vào giỏ hàng'),
+        duration: const Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'Xem giỏ hàng',
+          onPressed: () {
+            // Navigate to cart screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CartScreen(user: widget.user),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +103,13 @@ class _AccessoryScreenState extends State<AccessoryPage> {
               child: ProductGrid(
                 products: _displayProducts,
                 onTapProduct: (p) {},
-                onAddToCart: (p) {},
+                onAddToCart: _addToCart,
               ),
             ),
           ],
         ),
       ),
+      floatingActionButton: CartFloatingButton(user: widget.user),
     );
   }
 }

@@ -47,9 +47,11 @@ class MyApp extends StatelessWidget {
       baseUrl: 'https://intership.hqsolutions.vn',
     );
     final bookingRepository = BookingRepository();
-    final newsMatchRepository = NewsMatchRepository(baseUrl: 'https://intership.hqsolutions.vn'); // ✅
-    final newsMatchDetailRepository = NewsMatchDetailRepository(); // ✅
-    final manualLookupRepository = ManualTicketLookupRepository( // ✅ ADD
+    final newsMatchRepository = NewsMatchRepository(
+      baseUrl: 'https://intership.hqsolutions.vn',
+    );
+    final newsMatchDetailRepository = NewsMatchDetailRepository();
+    final manualLookupRepository = ManualTicketLookupRepository(
       baseUrl: 'https://intership.hqsolutions.vn',
     );
     final ticketBloc = TicketBloc(repository: ticketRepository);
@@ -61,22 +63,33 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => MatchBloc(MatchRepository())),
         BlocProvider(create: (_) => TeamBloc(TeamRepository())),
         BlocProvider(create: (_) => MatchDetailsBloc(MatchDetailsRepository())),
-        BlocProvider(create: (_) => BookingDetailsBloc(BookingDetailsRepository())),
-        BlocProvider(create: (_) => BookingBloc(bookingRepository: bookingRepository)),
-        BlocProvider(create: (_) => NotiBloc(NotiRepository())),
-        BlocProvider(create: (_) => NewsMatchBloc(repository: newsMatchRepository)), // ✅
-        BlocProvider(create: (_) => NewsMatchDetailBloc(repository: newsMatchDetailRepository)), // ✅
-
         BlocProvider(
-          create: (_) => PaymentBloc(
-            paymentRepository: paymentRepository,
-            bookingRepository: bookingRepository,
-            ticketBloc: ticketBloc,
-          ),
+          create: (_) => BookingDetailsBloc(BookingDetailsRepository()),
+        ),
+        BlocProvider(
+          create: (_) => BookingBloc(bookingRepository: bookingRepository),
+        ),
+        BlocProvider(create: (_) => NotiBloc(NotiRepository())),
+        BlocProvider(
+          create: (_) => NewsMatchBloc(repository: newsMatchRepository),
+        ),
+        BlocProvider(
+          create:
+              (_) => NewsMatchDetailBloc(repository: newsMatchDetailRepository),
         ),
 
-        BlocProvider( // ✅ ADD bloc tra cứu vé
-          create: (_) => ManualTicketLookupBloc(repository: manualLookupRepository),
+        BlocProvider(
+          create:
+              (_) => PaymentBloc(
+                paymentRepository: paymentRepository,
+                bookingRepository: bookingRepository,
+                ticketBloc: ticketBloc,
+              ),
+        ),
+
+        BlocProvider(
+          create:
+              (_) => ManualTicketLookupBloc(repository: manualLookupRepository),
         ),
       ],
       child: MaterialApp(

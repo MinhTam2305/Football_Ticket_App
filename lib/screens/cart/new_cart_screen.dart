@@ -11,6 +11,7 @@ import 'package:football_ticket/models/user_model.dart';
 import 'package:football_ticket/models/cart_item_model.dart';
 import 'package:football_ticket/services/cart_service.dart';
 import 'package:football_ticket/screens/payment/webview_payment_screen.dart';
+import 'package:football_ticket/screens/cart/cart_successful_screen.dart';
 
 class CartScreen extends StatefulWidget {
   final MatchDetailsModel? detailsMatch;
@@ -70,8 +71,31 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     
-    // Không còn tự động thêm vé vào cart nữa
-    // Vì giờ việc thêm sẽ được xử lý từ DetailsMatch
+    // Nếu có thông tin vé được truyền vào, thêm vào cart
+    if (widget.detailsMatch != null && 
+        widget.stand != null && 
+        widget.totlePrice != null && 
+        widget.quantity != null) {
+      final ticketItem = CartItem(
+        id: '${widget.detailsMatch!.idMatch}_${widget.stand!.standId}',
+        type: CartItemType.ticket,
+        title: '${widget.detailsMatch!.match.homeTeam.teamName} vs ${widget.detailsMatch!.match.awayTeam.teamName}',
+        subtitle: 'Stand: ${widget.stand!.standName}',
+        imageUrl: widget.detailsMatch!.match.homeTeam.logo,
+        price: widget.totlePrice! / widget.quantity!,
+        quantity: widget.quantity!,
+        metadata: {
+          'matchId': widget.detailsMatch!.idMatch,
+          'standId': widget.stand!.standId,
+          'matchTime': widget.detailsMatch!.match.matchTime,
+        },
+      );
+      
+      // Kiểm tra xem item đã có trong cart chưa
+      if (!_cartService.hasItem(ticketItem.id, CartItemType.ticket)) {
+        _cartService.addItem(ticketItem);
+      }
+    }
   }
 
   String _formatVND(num value) {
@@ -251,7 +275,6 @@ class _CartScreenState extends State<CartScreen> {
         animation: _cartService,
         builder: (context, child) {
           final cartItems = _cartService.items;
-          final groupedItems = _cartService.getItemsGroupedByMatch();
           
           if (cartItems.isEmpty) {
             return const Center(
@@ -285,10 +308,8 @@ class _CartScreenState extends State<CartScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // ====== Hiển thị items theo từng trận đấu ======
-                      ...groupedItems.entries.map((entry) => 
-                        _buildMatchSection(entry.key, entry.value)
-                      ),
+                      // ====== Danh sách items trong cart ======
+                      ...cartItems.map((item) => _buildCartItem(item)),
                       
                       const SizedBox(height: 16),
 
@@ -436,19 +457,9 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _buildMatchSection(String matchId, List<CartItem> items) {
-    // Tìm ticket item để lấy thông tin trận đấu
-    final ticketItem = items.firstWhere(
-      (item) => item.type == CartItemType.ticket,
-      orElse: () => items.first,
-    );
-    
-    final matchTitle = matchId == 'general' 
-      ? 'Phụ kiện chung' 
-      : ticketItem.title;
-    
+  Widget _buildCartItem(CartItem item) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
@@ -460,220 +471,102 @@ class _CartScreenState extends State<CartScreen> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header của trận đấu
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              color: Color(0xFFF8F9FA),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  matchId == 'general' ? Icons.shopping_bag : Icons.sports_soccer,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    matchTitle,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                      color: AppColors.textMain,
-                    ),
-                  ),
-                ),
-                if (matchId != 'general' && ticketItem.metadata['matchTime'] != null)
-                  Text(
-                    ticketItem.metadata['matchTime'],
-                    style: const TextStyle(
-                      color: AppColors.textSub,
-                      fontSize: 13,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          
-          // Danh sách items của trận đấu này
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              children: items.map((item) => _buildCartItem(item)).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCartItem(CartItem item) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: item.type == CartItemType.ticket 
-          ? const Color(0xFFE3F2FD) 
-          : AppColors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: item.type == CartItemType.ticket 
-            ? AppColors.primary.withOpacity(0.3)
-            : Colors.grey[200]!,
-        ),
-      ),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Icon hoặc hình ảnh
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.grey[100],
+          // Hình ảnh
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              item.imageUrl,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => Container(
+                width: 60,
+                height: 60,
+                color: Colors.grey[200],
+                child: const Icon(Icons.image_not_supported),
+              ),
             ),
-            child: item.type == CartItemType.ticket
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    item.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.stadium,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    item.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const Icon(
-                      Icons.shopping_bag,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
           ),
           const SizedBox(width: 12),
           
-          // Thông tin item
+          // Thông tin
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    if (item.type == CartItemType.ticket)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'VÉ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    else
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: const Text(
-                          'PHỤ KIỆN',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        item.subtitle,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
+                Text(
+                  item.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _formatVND(item.price),
+                  item.subtitle,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.primary,
-                    fontSize: 15,
+                    color: AppColors.textSub,
+                    fontSize: 13,
                   ),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      _formatVND(item.price),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        _buildQuantityButton(
+                          icon: Icons.remove,
+                          onTap: () => _cartService.updateItemQuantity(
+                            item.id,
+                            item.type,
+                            item.quantity - 1,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            '${item.quantity}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        _buildQuantityButton(
+                          icon: Icons.add,
+                          onTap: () => _cartService.updateItemQuantity(
+                            item.id,
+                            item.type,
+                            item.quantity + 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
           
-          // Quantity controls
-          Row(
-            children: [
-              _buildQuantityButton(
-                icon: Icons.remove,
-                onTap: () => _cartService.updateItemQuantity(
-                  item.id,
-                  item.type,
-                  item.quantity - 1,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  '${item.quantity}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              _buildQuantityButton(
-                icon: Icons.add,
-                onTap: () => _cartService.updateItemQuantity(
-                  item.id,
-                  item.type,
-                  item.quantity + 1,
-                ),
-              ),
-            ],
-          ),
-          
           // Nút xóa
-          const SizedBox(width: 8),
           IconButton(
             onPressed: () => _cartService.removeItem(item.id, item.type),
             icon: const Icon(
               Icons.delete_outline,
               color: Colors.red,
-              size: 20,
             ),
           ),
         ],
@@ -737,46 +630,29 @@ class _CartScreenState extends State<CartScreen> {
           if (result == true) {
             // Tìm ticket item để lấy thông tin match
             final ticketItems = _cartService.getItemsByType(CartItemType.ticket);
-            if (ticketItems.isNotEmpty) {
-              // Sử dụng thông tin từ ticket item đầu tiên
-              final firstTicket = ticketItems.first;
+            if (ticketItems.isNotEmpty && widget.detailsMatch != null) {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) =>
+                          CartSuccessfulScreen(matchModel: widget.detailsMatch!),
+                ),
+              );
               
-              // Tạo mock MatchDetailsModel để truyền vào CartSuccessfulScreen
-              // Hoặc có thể cập nhật CartSuccessfulScreen để không cần MatchDetailsModel
-              
-              // Tạm thời comment out phần này để tránh lỗi
-              // await Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder:
-              //         (_) =>
-              //             CartSuccessfulScreen(matchModel: widget.detailsMatch!),
-              //   ),
-              // );
-              
+              final ticketItem = ticketItems.first;
               context.read<PaymentBloc>().add(
                 CompleteBookingAndRefreshTicketsEvent(
                   userId: widget.user.uid!,
-                  matchId: firstTicket.metadata['matchId'],
-                  standId: firstTicket.metadata['standId'],
-                  quantity: firstTicket.quantity,
+                  matchId: ticketItem.metadata['matchId'],
+                  standId: ticketItem.metadata['standId'],
+                  quantity: ticketItem.quantity,
                   token: widget.user.token!,
                 ),
               );
               
               // Xóa cart sau khi thanh toán thành công
               _cartService.clearCart();
-              
-              // Hiển thị thông báo thành công
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Thanh toán thành công!"),
-                  backgroundColor: Colors.green,
-                ),
-              );
-              
-              // Quay về màn hình trước
-              Navigator.pop(context);
             }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

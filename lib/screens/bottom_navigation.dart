@@ -86,7 +86,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         isUser
             ? [
               HomePage(),
-              AccessoryPage(),
+              AccessoryPage(user: widget.user),
               NewsScreen(),
               TicketScreen(userId: widget.user.uid!, token: widget.user.token!),
               ProfilePage(),

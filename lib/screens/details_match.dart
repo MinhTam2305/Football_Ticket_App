@@ -5,6 +5,8 @@ import 'package:football_ticket/core/constants/colors.dart';
 import 'package:football_ticket/models/match_details_model.dart';
 import 'package:football_ticket/models/stand_model.dart';
 import 'package:football_ticket/models/user_model.dart';
+import 'package:football_ticket/models/cart_item_model.dart';
+import 'package:football_ticket/services/cart_service.dart';
 import 'package:football_ticket/screens/cart/cart_screen.dart';
 import 'package:football_ticket/widgets/stands_card.dart';
 
@@ -25,6 +27,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
   StandModel? selectedStand;
   double? selectedPrice;
   int? selectedQuantity;
+  final CartService _cartService = CartService();
 
   final Map<String, int> _accessoryQty = {};
 
@@ -62,6 +65,54 @@ class _DetailsMatchState extends State<DetailsMatch> {
         backgroundColor: AppColors.background,
         centerTitle: true,
         title: Text("Match details", style: AppTextStyles.title2),
+        actions: [
+          AnimatedBuilder(
+            animation: _cartService,
+            builder: (context, child) {
+              final itemCount = _cartService.totalItems;
+              return Stack(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CartScreen(user: widget.user),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.shopping_cart, color: Colors.black),
+                  ),
+                  if (itemCount > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 16,
+                          minHeight: 16,
+                        ),
+                        child: Text(
+                          itemCount > 99 ? '99+' : '$itemCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -175,18 +226,70 @@ class _DetailsMatchState extends State<DetailsMatch> {
               );
               return;
             }
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder:
-                    (context) => CartScreen(
-                      detailsMatch: widget.detailsMatch,
-                      user: widget.user,
-                      stand: selectedStand!,
-                      totlePrice:
-                          (selectedPrice ?? 0) + _totalAccessory.toDouble(),
-                      quantity: selectedQuantity ?? 1,
-                    ),
+            
+            // Thêm vé vào cart
+            final ticketItem = CartItem(
+              id: '${widget.detailsMatch.idMatch}_${selectedStand!.standId}',
+              type: CartItemType.ticket,
+              title: '${widget.detailsMatch.match.homeTeam.teamName} vs ${widget.detailsMatch.match.awayTeam.teamName}',
+              subtitle: 'Stand: ${selectedStand!.standName}',
+              imageUrl: widget.detailsMatch.match.homeTeam.logo,
+              price: selectedPrice ?? 0,
+              quantity: selectedQuantity ?? 1,
+              metadata: {
+                'matchId': widget.detailsMatch.idMatch,
+                'standId': selectedStand!.standId,
+                'matchTime': widget.detailsMatch.match.matchTime,
+              },
+            );
+            
+            // Thêm accessories được chọn vào cart
+            final accessories = <CartItem>[];
+            final accessoryList = widget.detailsMatch.accessories.isEmpty 
+              ? _mockAccessories 
+              : widget.detailsMatch.accessories;
+              
+            for (final accessory in accessoryList) {
+              final qty = _accessoryQty[accessory.id] ?? 0;
+              if (qty > 0) {
+                accessories.add(CartItem(
+                  id: '${widget.detailsMatch.idMatch}_${accessory.id}',
+                  type: CartItemType.accessory,
+                  title: accessory.name,
+                  subtitle: accessory.name,
+                  imageUrl: accessory.imageUrl,
+                  price: accessory.price.toDouble(),
+                  quantity: qty,
+                  metadata: {
+                    'matchId': widget.detailsMatch.idMatch,
+                    'accessoryId': accessory.id,
+                  },
+                ));
+              }
+            }
+            
+            // Thêm tất cả vào cart
+            _cartService.addItem(ticketItem);
+            for (final accessory in accessories) {
+              _cartService.addItem(accessory);
+            }
+            
+            // Hiển thị thông báo
+            final totalItems = 1 + accessories.length;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Đã thêm $totalItems items vào giỏ hàng'),
+                action: SnackBarAction(
+                  label: 'Xem giỏ hàng',
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CartScreen(user: widget.user),
+                      ),
+                    );
+                  },
+                ),
               ),
             );
           },
@@ -525,47 +628,6 @@ const _mockAccessories = [
     categoryId: "1",
   ),
 ];
-
-class _AccessoryPlaceholderGrid extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 4,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 0.85,
-      ),
-      itemBuilder:
-          (_, __) => Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.blue.shade200),
-            ),
-            child: Column(
-              children: [
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Checkbox(value: false, onChanged: null),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Container(color: Colors.grey.shade300),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text('20 000đ', style: AppTextStyles.body1),
-                const SizedBox(height: 6),
-              ],
-            ),
-          ),
-    );
-  }
-}
 
 // helper
 String _formatVnCurrency(int v) {
