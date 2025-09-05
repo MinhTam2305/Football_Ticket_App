@@ -138,13 +138,30 @@ class _BottomNavigationState extends State<BottomNavigation> {
 
     return Scaffold(
       body: IndexedStack(index: _currentPageIndex, children: _widgetOption),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _navItems,
-        currentIndex: _currentPageIndex,
-        backgroundColor: AppColors.background,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Theme(
+        data: Theme.of(context).copyWith(
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            selectedItemColor: AppColors.primary,
+            unselectedItemColor: Colors.grey,
+            type: BottomNavigationBarType.fixed,
+          ),
+
+          colorScheme: Theme.of(
+            context,
+          ).colorScheme.copyWith(surfaceTint: Colors.transparent),
+        ),
+        child: BottomNavigationBar(
+          items: _navItems,
+          currentIndex: _currentPageIndex,
+          backgroundColor: Colors.white,
+          selectedItemColor: AppColors.primary,
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          elevation: 0,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }

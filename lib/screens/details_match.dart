@@ -26,12 +26,20 @@ class _DetailsMatchState extends State<DetailsMatch> {
   double? selectedPrice;
   int? selectedQuantity;
 
-  // chọn accessory
-  final Set<String> _selectedAccessoryIds = {};
+  final Map<String, int> _accessoryQty = {};
 
-  int get _totalAccessory => widget.detailsMatch.accessories
-      .where((a) => _selectedAccessoryIds.contains(a.id))
-      .fold(0, (sum, a) => sum + a.price);
+  int get _totalAccessory {
+    final list =
+        widget.detailsMatch.accessories.isEmpty
+            ? _mockAccessories
+            : widget.detailsMatch.accessories;
+    int sum = 0;
+    for (final a in list) {
+      final q = _accessoryQty[a.id] ?? 0;
+      sum += q * a.price;
+    }
+    return sum;
+  }
 
   Future<void> _openMap(String url) async {
     final uri = Uri.parse(url);
@@ -128,17 +136,18 @@ class _DetailsMatchState extends State<DetailsMatch> {
 
             // --- Accessory (Drinking water) ---
             _AccessorySection(
-              title: 'Drinking water',
+              title: 'Accessory',
               items: d.accessories,
-              selectedIds: _selectedAccessoryIds,
-              onToggle:
-                  (id) => setState(() {
-                    if (_selectedAccessoryIds.contains(id)) {
-                      _selectedAccessoryIds.remove(id);
-                    } else {
-                      _selectedAccessoryIds.add(id);
-                    }
-                  }),
+              quantities: _accessoryQty,
+              onQtyChanged: (id, qty) {
+                setState(() {
+                  if (qty <= 0) {
+                    _accessoryQty.remove(id);
+                  } else {
+                    _accessoryQty[id] = qty;
+                  }
+                });
+              },
             ),
 
             const SizedBox(height: 12),
@@ -152,7 +161,7 @@ class _DetailsMatchState extends State<DetailsMatch> {
               ),
             ),
 
-            const SizedBox(height: 80),
+            // const SizedBox(height: 80),
           ],
         ),
       ),
@@ -266,7 +275,7 @@ class _MatchHeaderCard extends StatelessWidget {
               children: [
                 const Icon(Icons.location_on_outlined, color: Colors.grey),
                 const SizedBox(width: 5),
-                // Text(details.match. ?? 'Stadium', style: AppTextStyles.body1),
+                Text("Go Dau"),
               ],
             ),
             const SizedBox(height: 10),
@@ -289,23 +298,21 @@ class _MatchHeaderCard extends StatelessWidget {
   }
 }
 
-// --- Accessory grid section ---
 class _AccessorySection extends StatelessWidget {
   const _AccessorySection({
     required this.title,
     required this.items,
-    required this.selectedIds,
-    required this.onToggle,
+    required this.quantities,
+    required this.onQtyChanged,
   });
 
   final String title;
   final List<AccessoryModel> items;
-  final Set<String> selectedIds;
-  final ValueChanged<String> onToggle;
+  final Map<String, int> quantities;
+  final void Function(String id, int qty) onQtyChanged;
 
   @override
   Widget build(BuildContext context) {
-    // Nếu API chưa có, dùng mock cho phép click
     final list = items.isEmpty ? _mockAccessories : items;
 
     return Column(
@@ -326,27 +333,43 @@ class _AccessorySection extends StatelessWidget {
           ),
           itemBuilder: (_, i) {
             final a = list[i];
-            final selected = selectedIds.contains(a.id);
+            final qty = quantities[a.id] ?? 0;
+            final selected = qty > 0;
+
             return Material(
               color: Colors.white,
               child: InkWell(
-                onTap: () => onToggle(a.id),
+                onTap: () {
+                  // toggle nhanh: nếu đang 0 -> 1, nếu >0 -> 0
+                  onQtyChanged(a.id, selected ? 0 : 1);
+                },
                 child: Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue.shade200),
+                    border: Border.all(
+                      color:
+                          selected ? AppColors.primary : Colors.blue.shade200,
+                      width: selected ? 1.5 : 1,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
                     children: [
+                      // Checkbox chọn/bỏ
                       Align(
                         alignment: Alignment.topLeft,
                         child: Checkbox(
                           value: selected,
-                          onChanged:
-                              (_) => onToggle(
-                                a.id,
-                              ), // phải có onChanged để checkbox hoạt động
+                          onChanged: (v) {
+                            if (v == true) {
+                              onQtyChanged(a.id, qty > 0 ? qty : 1);
+                            } else {
+                              onQtyChanged(a.id, 0);
+                            }
+                          },
                         ),
                       ),
+
+                      // Ảnh
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -361,13 +384,79 @@ class _AccessorySection extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _formatVnCurrency(a.price),
-                        style: AppTextStyles.body1,
-                        textAlign: TextAlign.center,
-                      ),
                       const SizedBox(height: 6),
+
+                      // Tên + giá
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              a.name,
+                              style: AppTextStyles.body1,
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '${_formatVnCurrency(a.price)} đ',
+                              style: AppTextStyles.body1.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      // Stepper số lượng
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 6,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _QtyBtn(
+                              icon: Icons.remove,
+                              onTap:
+                                  selected && qty > 0
+                                      ? () => onQtyChanged(a.id, qty - 1)
+                                      : null,
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF6F7FB),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                '$qty',
+                                style: AppTextStyles.body1.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            _QtyBtn(
+                              icon: Icons.add,
+                              onTap:
+                                  () => onQtyChanged(
+                                    a.id,
+                                    (qty + 1).clamp(0, 99),
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -376,6 +465,31 @@ class _AccessorySection extends StatelessWidget {
           },
         ),
       ],
+    );
+  }
+}
+
+class _QtyBtn extends StatelessWidget {
+  const _QtyBtn({required this.icon, required this.onTap});
+  final IconData icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = onTap != null;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        width: 32,
+        height: 32,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: enabled ? AppColors.primary : Colors.grey.shade300,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, size: 18, color: Colors.white),
+      ),
     );
   }
 }
