@@ -55,14 +55,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         userId: event.userId,
         matchId: event.matchId,
         standId: event.standId,
-        quantity: event.quantity, // ⚠️ quantity phải truyền vào đúng theo API yêu cầu
+        quantity: event.quantity,
       );
       
       print(event.quantity);
 
       await bookingRepository.createBooking(bookingRequest, event.token);
 
-      // Gọi lại TicketBloc để fetch danh sách vé mới
       ticketBloc.add(FetchMyTickets(userId: event.userId, token: event.token));
 
       emit(PaymentBookingComplete());

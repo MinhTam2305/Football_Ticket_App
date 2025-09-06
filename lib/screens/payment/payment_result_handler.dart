@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:uni_links/uni_links.dart';
 import 'package:football_ticket/blocs/booking/booking_bloc.dart';
 import 'package:football_ticket/blocs/booking/booking_event.dart';
 import 'package:football_ticket/screens/cart/cart_successful_screen.dart';

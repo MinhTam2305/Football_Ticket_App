@@ -3,9 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:football_ticket/blocs/payment/payment_bloc.dart';
 import 'package:football_ticket/blocs/payment/payment_state.dart';
 import 'package:football_ticket/models/match_details_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:football_ticket/blocs/payment/payment_bloc.dart';
-import 'package:football_ticket/blocs/payment/payment_state.dart';
 
 class CartSuccessfulScreen extends StatefulWidget {
   final MatchDetailsModel matchModel;

@@ -48,7 +48,6 @@ class _PaymentReturnScreenState extends State<PaymentReturnScreen> {
         ),
       );
 
-      // ✅ Delay để TicketBloc có thời gian fetch lại vé
       await Future.delayed(const Duration(seconds: 3));
 
       if (!mounted) return;

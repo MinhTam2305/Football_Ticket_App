@@ -56,7 +56,7 @@ class TicketDetailScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.white,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 6,
@@ -84,10 +84,13 @@ class TicketDetailScreen extends StatelessWidget {
                 child: ListView(
                   children: [
                     _infoRow('Trạng thái', ticket.ticketStatus),
-                    _infoRow('Ngày thi đấu', _formatDateTime(booking.matchDateTime)),
+                    _infoRow('Ngày thi đấu', _formatDateTimeSafe(booking.matchDateTime)),
                     _infoRow('Khán đài', ticket.standName),
                     _infoRow('Giá vé', '${ticket.price.toStringAsFixed(0)} đ'),
-                    _infoRow('Ngày xuất vé', _formatDateTime(ticket.issuedAt)),
+
+                    // ✅ Ngày xuất vé: DÙNG issuedAt từ BE, đổi sang giờ địa phương
+                    _infoRow('Ngày xuất vé', _formatDateTimeSafe(ticket.issuedAt)),
+
                     _infoRow('Địa điểm', 'Sân vận động Gò Đậu'),
                     _infoRow('Mã vé', ticket.ticketId),
                   ],
@@ -127,7 +130,12 @@ class TicketDetailScreen extends StatelessWidget {
     );
   }
 
-  String _formatDateTime(DateTime dt) {
-    return "${dt.day}/${dt.month}/${dt.year} - ${dt.hour}:${dt.minute.toString().padLeft(2, '0')}";
+  /// Format an toàn: nhận DateTime (giờ UTC hoặc có offset) -> hiển thị theo giờ địa phương (+07:00 VN)
+  String _formatDateTimeSafe(DateTime? dt) {
+    if (dt == null) return '--/--/---- --:--';
+    final local = dt.toLocal(); // xử lý cả chuỗi có offset hoặc UTC
+    String two(int n) => n.toString().padLeft(2, '0');
+    return "${two(local.day)}/${two(local.month)}/${local.year} - "
+        "${two(local.hour)}:${two(local.minute)}";
   }
 }

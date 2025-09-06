@@ -89,7 +89,7 @@ class _ManualTicketLookupScreenState extends State<ManualTicketLookupScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white, // ✅ In đậm và trắng
+                            color: Colors.white,
                           ),
                         ),
                       ),
